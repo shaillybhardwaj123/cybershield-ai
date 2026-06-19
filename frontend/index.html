@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberShield AI - Your Digital Safety Companion</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="dark-mode">
+
+    <!-- SCREEN 1: LANDING PAGE -->
+    <div class="view-screen active" id="screen-landing">
+        <!-- Floating Robots Background Container -->
+        <div class="landing-robots-bg">
+            <div class="floating-rob rob-1"><i class="fa-solid fa-robot"></i></div>
+            <div class="floating-rob rob-2"><i class="fa-solid fa-robot"></i></div>
+            <div class="floating-rob rob-3"><i class="fa-solid fa-robot"></i></div>
+            <div class="floating-rob rob-4"><i class="fa-solid fa-robot"></i></div>
+            <div class="floating-rob rob-5"><i class="fa-solid fa-robot"></i></div>
+            <div class="floating-rob rob-6"><i class="fa-solid fa-robot"></i></div>
+        </div>
+
+        <!-- Landing Header / Navbar -->
+        <header class="landing-navbar">
+            <div class="landing-brand clickable" id="landing-brand-home">
+                <img src="logo.png" alt="CyberShield Logo" class="landing-logo-img">
+                <div class="brand-text">
+                    <h2>CyberShield <span>AI</span></h2>
+                </div>
+            </div>
+            <nav class="landing-nav-links">
+                <a href="#landing-features">Core Features</a>
+                <a href="#landing-services">Incident Desks</a>
+                <a href="#landing-statistics">Audit Stats</a>
+                <a href="#landing-helpline">Helpline 1930</a>
+            </nav>
+            <div class="landing-nav-actions">
+                <div class="landing-helpline-badge">
+                    <i class="fa-solid fa-phone-volume"></i> Helpline: 1930
+                </div>
+                <button class="theme-toggle-btn" id="theme-toggle-landing" title="Toggle Light/Dark Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="landing-signin-btn" id="landing-goto-login-btn">
+                    <i class="fa-solid fa-right-to-bracket"></i> Student Sign In
+                </button>
+            </div>
+        </header>
+
+        <!-- Landing Hero Section -->
+        <div class="landing-hero-container">
+            <div class="landing-hero-grid">
+                <div class="landing-hero-text">
+                    <div class="landing-badge">
+                        <span class="pulse-dot"></span> Safety Advisory Network Active
+                    </div>
+                    <h1>Your Friendly Digital Safety Companion</h1>
+                    <p>Protect yourself from fake job offers, Telegram recruiter scams, phishing links, and suspicious fee demands. CyberShield runs real-time security audits and explains findings in plain language so you always stay secure online.</p>
+                    
+                    <div class="landing-cta-row">
+                        <button class="landing-cta-primary" id="landing-start-btn">
+                            Get Started Free <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                        <button class="landing-cta-secondary" id="landing-learn-btn">
+                            Explore Safety Hub
+                        </button>
+                    </div>
+                </div>
+                <div class="landing-hero-visual">
+                    <div class="landing-shield-orb-container">
+                        <!-- Floating Companion Orb -->
+                        <div class="landing-companion-orb" id="landing-companion-orb-element">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="orb-wave wave-1"></div>
+                        <div class="orb-wave wave-2"></div>
+                        <div class="orb-wave wave-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Ticker Bar (cybercrime.gov.in style) -->
+        <div class="landing-ticker-bar">
+            <div class="ticker-label-box">
+                <i class="fa-solid fa-triangle-exclamation"></i> CRITICAL ALERTS
+            </div>
+            <div class="ticker-content-box">
+                <marquee scrollamount="5" onmouseover="this.stop();" onmouseout="this.start();">
+                    ⚠️ [PLACEMENT ALERT] Phishing recruiting letters demanding upfront software fee logs flagged on university servers. Check templates. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    ⚠️ [LINK VERIFY] Typosquatting credential forms mimicking student portal verification links (e.g. sbi-verification-secure.com) active. Audit URLs. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    ⚠️ [HELPLINE NOTE] Report recruitment scams and fake internship transactions immediately to local safety helpline 1930 or submit via Admin dashboard.
+                </marquee>
+            </div>
+        </div>
+
+        <!-- Landing Features Section -->
+        <section class="landing-features-section" id="landing-features">
+            <div class="landing-section-header">
+                <h3>Designed for College Students & Job Seekers</h3>
+                <p>Equipped with 8 specialized AI verification agents reviewing threat vectors in parallel workflows.</p>
+            </div>
+            <div class="landing-features-grid">
+                <div class="landing-feat-card">
+                    <div class="landing-feat-icon icon-msg"><i class="fa-solid fa-comment-dots"></i></div>
+                    <h4>📩 Message Auditing</h4>
+                    <p>Scan WhatsApp and Telegram messages to detect recruiting fraud, reward pressure, and fee markers.</p>
+                </div>
+                <div class="landing-feat-card">
+                    <div class="landing-feat-icon icon-url"><i class="fa-solid fa-globe"></i></div>
+                    <h4>🔗 Link Analysis</h4>
+                    <p>Unmask lookup domains, redirects, and typosquatting mimicry targeting banking or placement forms.</p>
+                </div>
+                <div class="landing-feat-card">
+                    <div class="landing-feat-icon icon-ocr"><i class="fa-solid fa-file-invoice"></i></div>
+                    <h4>📷 Screenshot OCR</h4>
+                    <p>Attach flyers or recruiter cards. Our automated system extracts text patterns to verify authenticity.</p>
+                </div>
+                <div class="landing-feat-card">
+                    <div class="landing-feat-icon icon-db"><i class="fa-solid fa-database"></i></div>
+                    <h4>🧠 Threat Intelligence</h4>
+                    <p>Matches scam handles and domains against SQLite memory banks verified by peer security nodes.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Citizen Service Cards Grid (cybercrime.gov.in style) -->
+        <section class="landing-services-section" id="landing-services">
+            <div class="landing-section-header">
+                <h3>National Security & Student Incident Reporting</h3>
+                <p>Select a specialized portal desk below to submit a formal incident log or run automated verifications.</p>
+            </div>
+            <div class="services-grid">
+                <!-- Card 1: Women/Child Safety -->
+                <div class="service-card gradient-pink">
+                    <div class="service-icon"><i class="fa-solid fa-user-shield"></i></div>
+                    <div class="service-body">
+                        <h4>Report Women / Child Safety Scams</h4>
+                        <p>File reports for harassment, placement fee blackmails, or student subsidy threats targeting female applicants.</p>
+                        <button class="service-btn" id="btn-sec-women">File Report <i class="fa-solid fa-angle-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- Card 2: Financial Placements Scam -->
+                <div class="service-card gradient-emerald">
+                    <div class="service-icon"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                    <div class="service-body">
+                        <h4>Report Financial Placement Fraud</h4>
+                        <p>Flag demands for laptop processing payments, refundable interview charges, or fake UPI registration accounts.</p>
+                        <button class="service-btn" id="btn-sec-finance">Report Scam <i class="fa-solid fa-angle-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- Card 3: Academic Phishing links -->
+                <div class="service-card gradient-cyan">
+                    <div class="service-icon"><i class="fa-solid fa-link-slash"></i></div>
+                    <div class="service-body">
+                        <h4>Report Phishing Links & Portals</h4>
+                        <p>Submit lookalike campus verification websites or fake government schemes asking for student credentials.</p>
+                        <button class="service-btn" id="btn-sec-phish">Audit Link <i class="fa-solid fa-angle-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- Card 4: General Cyber Crime Desk -->
+                <div class="service-card gradient-purple">
+                    <div class="service-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="service-body">
+                        <h4>General Cyber Crime Help Desk</h4>
+                        <p>Submit issues relating to identity theft, social engineering traps, fake internship certificates, or Telegram bots.</p>
+                        <button class="service-btn" id="btn-sec-general">Lodge Complaint <i class="fa-solid fa-angle-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Real-Time Statistics Board (cybercrime.gov.in style) -->
+        <section class="landing-statistics-section" id="landing-statistics">
+            <div class="landing-section-header">
+                <h3>CyberShield Protection Network Benchmarks</h3>
+                <p>Real-time security counters running across cooperative student safety servers.</p>
+            </div>
+            <div class="stats-counter-grid">
+                <div class="stat-counter-card">
+                    <h2 class="stat-number">24,850+</h2>
+                    <p>Safety Audits Completed</p>
+                </div>
+                <div class="stat-counter-card">
+                    <h2 class="stat-number">98.4%</h2>
+                    <p>Detection Accuracy Rate</p>
+                </div>
+                <div class="stat-counter-card">
+                    <h2 class="stat-number">150ms</h2>
+                    <p>Average Verification Latency</p>
+                </div>
+                <div class="stat-counter-card">
+                    <h2 class="stat-number">8</h2>
+                    <p>Parallel Verifier Agents</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Helpline Center Section (cybercrime.gov.in style) -->
+        <section class="landing-helpline-section" id="landing-helpline">
+            <div class="landing-section-header">
+                <h3>National Cyber Crime Helpline: 1930</h3>
+                <p>In case of financial fraud, take immediate action. Follow this protocol to lock threat accounts.</p>
+            </div>
+            <div class="helpline-flow">
+                <div class="flow-step">
+                    <div class="step-num">1</div>
+                    <h4>Call 1930 Immediately</h4>
+                    <p>Report transaction reference IDs to block the scammer's bank accounts from transferring funds.</p>
+                </div>
+                <div class="flow-step">
+                    <div class="step-num">2</div>
+                    <h4>Audit on CyberShield</h4>
+                    <p>Paste the chat details or links. Extract verification metrics, UPI identifiers, or Telegram contact logs.</p>
+                </div>
+                <div class="flow-step">
+                    <div class="step-num">3</div>
+                    <h4>Lodge Official Complaint</h4>
+                    <p>Generate a clean markdown report automatically to present to university advisors or official cyber cells.</p>
+                </div>
+            </div>
+            <div class="helpline-cta-box">
+                <h4>Need Immediate Advisory Assistance or Safe Templates?</h4>
+                <p>Access our student safety workspace to check documents, inspect URLs, and receive automatic reply templates.</p>
+                <button class="helpline-signin-btn" id="landing-helpline-cta-btn">Open Safety Advisor Workspace</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- SCREEN 2: LOGIN PAGE -->
+    <div class="view-screen" id="screen-login">
+        <!-- Animated Background Animation -->
+        <div class="login-mesh-bg">
+            <div class="mesh-glow glow-blue"></div>
+            <div class="mesh-glow glow-purple"></div>
+        </div>
+
+        <header class="login-navbar">
+            <div class="landing-brand clickable" id="login-brand-back">
+                <div class="landing-logo-icon">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </div>
+                <span class="back-text">Back to Home</span>
+            </div>
+        </header>
+
+        <div class="login-card-container">
+            <div class="login-card">
+                <div class="login-card-header">
+                    <div class="login-logo-circle">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h3>Sign In to CyberShield</h3>
+                    <p>Launch your student safety work environment</p>
+                </div>
+
+                <form class="login-form" id="login-form-el" onsubmit="event.preventDefault();">
+                    <div class="login-input-group">
+                        <label for="student-email">Student Email Address</label>
+                        <div class="login-input-wrapper">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input type="email" id="student-email" placeholder="student@university.edu" required value="student@university.edu">
+                        </div>
+                    </div>
+
+                    <div class="login-input-group">
+                        <label for="student-pin">Workspace Access PIN</label>
+                        <div class="login-input-wrapper">
+                            <i class="fa-solid fa-key"></i>
+                            <input type="password" id="student-pin" placeholder="••••••••" required value="12345678">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="login-submit-btn" id="login-submit-btn">
+                        <span class="btn-text">Launch Workspace <i class="fa-solid fa-circle-nodes"></i></span>
+                        <span class="btn-loader-text hidden"><i class="fa-solid fa-spinner fa-spin"></i> Securing session...</span>
+                    </button>
+                </form>
+
+                <div class="login-divider">
+                    <span>or</span>
+                </div>
+
+                <button class="login-guest-btn" id="login-guest-btn">
+                    Access as Guest Companion <i class="fa-solid fa-angles-right"></i>
+                </button>
+
+                <div class="login-card-footer">
+                    <p><i class="fa-solid fa-shield-halved"></i> Secured locally by SQLite Database & Gemini ADK</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: WORKSPACE APP -->
+    <div class="view-screen" id="screen-app">
+        <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand clickable" id="sidebar-brand-home">
+                <img src="logo.png" alt="CyberShield Logo" class="sidebar-logo-img">
+                <div class="brand-text">
+                    <h1>CyberShield <span>AI</span></h1>
+                    <p>Digital Safety Companion</p>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <button class="nav-btn active" data-tab="scanner">
+                    <i class="fa-solid fa-house-heart"></i> <span>Safety Check</span>
+                </button>
+                <button class="nav-btn" data-tab="results" id="nav-results-btn">
+                    <i class="fa-solid fa-circle-question"></i> <span>Safety Review</span>
+                </button>
+                <button class="nav-btn" data-tab="history">
+                    <i class="fa-solid fa-timeline"></i> <span>Safety History</span>
+                </button>
+                <button class="nav-btn" data-tab="analytics">
+                    <i class="fa-solid fa-globe"></i> <span>Community Trends</span>
+                </button>
+                <button class="nav-btn" data-tab="education">
+                    <i class="fa-solid fa-book-open-reader"></i> <span>Safety Hub</span>
+                </button>
+                <button class="nav-btn" data-tab="admin">
+                    <i class="fa-solid fa-screwdriver-wrench"></i> <span>Admin Mode</span>
+                </button>
+                <button class="nav-btn logout-btn-item" id="nav-logout-btn">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span>Sign Out</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="status-badge connected">
+                    <span class="pulse-dot"></span>
+                    <span>Safety Advisor Active</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace Area -->
+        <main class="main-content">
+            <!-- HEADER -->
+            <header class="main-header">
+                <div class="header-title">
+                    <h2 id="page-title">Check if something looks suspicious</h2>
+                    <p id="page-desc">Stay Safe Online</p>
+                </div>
+                <div class="header-actions">
+                    <div class="threat-level-ticker">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="ticker-label">Campus Alert:</span>
+                        <span class="ticker-value warn">STAY ALERT</span>
+                    </div>
+                    <button class="theme-toggle-btn" id="theme-toggle-dashboard" title="Toggle Light/Dark Theme">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button class="quick-demo-btn" id="load-demo-btn">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Try an Example
+                    </button>
+                </div>
+            </header>
+
+            <!-- TABS -->
+            <div class="tab-viewport">
+                
+                <!-- TAB 1: SAFETY CHECK (SCANNER) -->
+                <section class="tab-content active" id="tab-scanner">
+                    <div class="companion-hero">
+                        <div class="shield-orb-container">
+                            <div class="shield-companion-orb" id="shield-companion-orb">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                        </div>
+                        <h2>Stay Safe Online</h2>
+                        <p>Paste a message, internship offer, email, or suspicious link and CyberShield AI will explain whether it appears safe.</p>
+                    </div>
+
+                    <!-- Input Category Selector Card Row -->
+                    <div class="selector-card-row">
+                        <div class="selector-card active" data-type="message">
+                            <div class="selector-icon indigo"><i class="fa-solid fa-envelope"></i></div>
+                            <h4>📩 Message</h4>
+                            <p>SMS, WhatsApp, text chats</p>
+                        </div>
+                        <div class="selector-card" data-type="link">
+                            <div class="selector-icon cyan"><i class="fa-solid fa-link"></i></div>
+                            <h4>🔗 Link</h4>
+                            <p>Suspicious URLs & web pages</p>
+                        </div>
+                        <div class="selector-card" data-type="job">
+                            <div class="selector-icon emerald"><i class="fa-solid fa-graduation-cap"></i></div>
+                            <h4>📄 Internship Offer</h4>
+                            <p>Emails, placements, letters</p>
+                        </div>
+                        <div class="selector-card" data-type="screenshot">
+                            <div class="selector-icon amber"><i class="fa-solid fa-image"></i></div>
+                            <h4>📷 Screenshot</h4>
+                            <p>Upload flyer, image, banner</p>
+                        </div>
+                    </div>
+
+                    <div class="scanner-grid">
+                        <div class="scanner-card draggable-card" draggable="true">
+                            <div class="card-header">
+                                <h3 id="input-box-title"><i class="fa-solid fa-paste"></i> Paste content here</h3>
+                            </div>
+                            <div class="text-input-wrapper">
+                                <textarea id="scan-text" placeholder="Type or paste the message you want to check..."></textarea>
+                                <div class="char-count">0 / 5000 characters</div>
+                            </div>
+                            
+                            <div class="url-input-section" id="url-input-group">
+                                <label for="scan-url"><i class="fa-solid fa-magnifying-glass"></i> Associated link (Optional)</label>
+                                <input type="text" id="scan-url" placeholder="e.g. http://tcs-job-verification.cc/apply">
+                            </div>
+
+                            <!-- Pre-seeded student examples -->
+                            <div class="quick-examples-section">
+                                <span class="example-label"><i class="fa-solid fa-sparkles"></i> Common scam messages to check:</span>
+                                <div class="example-pills">
+                                    <button type="button" class="example-pill" data-index="0">"Congratulations! You are selected..."</button>
+                                    <button type="button" class="example-pill" data-index="1">"Pay registration fee to verify..."</button>
+                                    <button type="button" class="example-pill" data-index="2">"Click to claim scholarship..."</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="scanner-sidebar">
+                            <!-- Drag and Drop Image/PDF File Upload -->
+                            <div class="upload-card draggable-card" id="upload-card-wrapper" draggable="true">
+                                <div class="card-header">
+                                    <h3><i class="fa-solid fa-cloud-arrow-up"></i> Upload Screenshot / Flyer</h3>
+                                </div>
+                                <div class="dropzone" id="file-dropzone">
+                                    <input type="file" id="scan-file" accept="image/*,application/pdf" class="file-input">
+                                    <div class="dropzone-content">
+                                        <i class="fa-solid fa-image-polaroid"></i>
+                                        <p class="primary-text">Drag & drop image/PDF here</p>
+                                        <p class="secondary-text">or click to browse local files</p>
+                                        <div class="selected-file-badge" id="selected-file-badge">
+                                            <i class="fa-solid fa-paperclip"></i> <span id="selected-file-name">None</span>
+                                            <button type="button" class="remove-file-btn" id="remove-file-btn"><i class="fa-solid fa-xmark"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Mode selection and triggers -->
+                            <div class="controls-card draggable-card" draggable="true">
+                                <div class="card-header">
+                                    <h3><i class="fa-solid fa-heart-pulse"></i> Advisor Options</h3>
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-label">
+                                        <span>Deep Scan Analysis</span>
+                                        <p>Uses parallel agents to cross-check threat files & safety databases</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="scan-mode" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <button class="scan-submit-btn" id="start-scan-btn">
+                                    <span class="btn-text"><i class="fa-solid fa-heart-shield"></i> CHECK FOR SAFETY</span>
+                                    <div class="btn-loader hidden"><i class="fa-solid fa-rotate fa-spin"></i> Checking safety indicators...</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 2: SAFETY REVIEW (RESULTS) -->
+                <section class="tab-content" id="tab-results">
+                    <div class="results-layout">
+                        <!-- Main verdict dashboard card -->
+                        <div class="verdict-banner-card" id="verdict-card">
+                            <div class="verdict-header">
+                                <div class="verdict-summary-left">
+                                    <div class="badge-row">
+                                        <span class="verdict-badge" id="verdict-badge-val">🚨 Likely Scam</span>
+                                        <span class="scam-type-badge" id="scam-type-badge-val">Internship Fee Request</span>
+                                    </div>
+                                    <h3 class="verdict-title" id="verdict-title-val">Be Careful with this offer</h3>
+                                    <p class="verdict-desc" id="verdict-desc-val">Our safety review flagged this message. It asks for upfront payments before hiring, which is highly unusual for legitimate employers.</p>
+                                </div>
+                                <div class="verdict-summary-right">
+                                    <span class="rating-sub-label">Safety Score</span>
+                                    <div class="rating-badge-container">
+                                        <span class="rating-num" id="verdict-score-value">0</span><span class="rating-max">/100</span>
+                                    </div>
+                                    <!-- Embedded gauge arc -->
+                                    <svg class="gauge-mini-svg" viewBox="0 0 100 100">
+                                        <circle class="gauge-bg" cx="50" cy="50" r="42"></circle>
+                                        <circle class="gauge-value" id="verdict-gauge" cx="50" cy="50" r="42" stroke-dasharray="263.8" stroke-dashoffset="263.8"></circle>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Friendly Explanation & Advice -->
+                        <div class="results-grid">
+                            <!-- Left: Plain English explanation -->
+                            <div class="explanation-card-friendly">
+                                <div class="card-header">
+                                    <h3><i class="fa-solid fa-lightbulb text-yellow"></i> Why We Think This</h3>
+                                </div>
+                                <div class="friendly-explanation-body" id="verdict-friendly-explanation">
+                                    <!-- Friendly text -->
+                                </div>
+
+                                <!-- Checklist of indicators -->
+                                <div class="friendly-evidence-list" id="evidence-list-container">
+                                    <!-- Items -->
+                                </div>
+                            </div>
+
+                            <!-- Right: Coping and reply tools -->
+                            <div class="action-card-friendly">
+                                <div class="card-header">
+                                    <h3><i class="fa-solid fa-hand-holding-hand text-indigo"></i> Safe Next Steps</h3>
+                                </div>
+                                <ul class="friendly-steps-list" id="next-steps-container">
+                                    <!-- Steps -->
+                                </ul>
+
+                                <div class="safe-reply-section" id="safe-reply-section">
+                                    <div class="reply-header">
+                                        <h4><i class="fa-solid fa-copy-reply"></i> Safe Reply to Sender</h4>
+                                        <button class="copy-btn" id="copy-reply-btn"><i class="fa-solid fa-copy"></i> Copy Text</button>
+                                    </div>
+                                    <div class="reply-box">
+                                        <pre id="reply-template-text">Polite reply template...</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- How CyberShield checked this (Agent visual node map) -->
+                        <div class="agent-visualization-card draggable-card" id="agent-vis-draggable" draggable="true">
+                            <div class="card-title-bar">
+                                <h3><i class="fa-solid fa-grip-vertical drag-handle"></i> How CyberShield Checked This</h3>
+                                <p class="section-desc">Our digital companion utilized specialized checkers to verify safety indicators. You can drag the agent nodes around, connecting cables stretch dynamically!</p>
+                            </div>
+                            
+                            <div class="agent-node-map" id="node-map-container">
+                                <!-- SVG layer for cables -->
+                                <svg class="agent-map-connections" id="svg-connections-layer">
+                                    <!-- Dynamic curved cables will draw here -->
+                                </svg>
+                                
+                                <!-- Hierarchical Nodes -->
+                                
+                                <!-- Central Input Node -->
+                                <div class="node-item node-center" id="node-input" data-node-id="input">
+                                    <div class="node-icon icon-input"><i class="fa-solid fa-envelope-open-text"></i></div>
+                                    <div class="node-label">User Input</div>
+                                </div>
+                                
+                                <!-- Supervisor Orchestrator -->
+                                <div class="node-item node-supervisor" id="node-orchestrator" data-node-id="orchestrator">
+                                    <div class="node-icon icon-orchestrator"><i class="fa-solid fa-crown"></i></div>
+                                    <div class="node-label">Supervisor</div>
+                                    <div class="node-status-badge">Supervisor</div>
+                                </div>
+                                
+                                <!-- Verification Agents -->
+                                <div class="node-item node-agent" id="node-message" data-node-id="message">
+                                    <div class="node-icon icon-message"><i class="fa-solid fa-comment-dots"></i></div>
+                                    <div class="node-label">Message Analyst</div>
+                                    <div class="node-val-badge" id="badge-node-msg">-</div>
+                                </div>
+                                <div class="node-item node-agent" id="node-link" data-node-id="link">
+                                    <div class="node-icon icon-link"><i class="fa-solid fa-globe"></i></div>
+                                    <div class="node-label">Link Verifier</div>
+                                    <div class="node-val-badge" id="badge-node-url">-</div>
+                                </div>
+                                <div class="node-item node-agent" id="node-job" data-node-id="job">
+                                    <div class="node-icon icon-job"><i class="fa-solid fa-award"></i></div>
+                                    <div class="node-label">Placement Auditor</div>
+                                    <div class="node-val-badge" id="badge-node-job">-</div>
+                                </div>
+                                <div class="node-item node-agent" id="node-attachment" data-node-id="attachment">
+                                    <div class="node-icon icon-attachment"><i class="fa-solid fa-file-invoice"></i></div>
+                                    <div class="node-label">OCR Scanner</div>
+                                    <div class="node-val-badge" id="badge-node-ocr">-</div>
+                                </div>
+                                <div class="node-item node-agent" id="node-intel" data-node-id="intel">
+                                    <div class="node-icon icon-pattern"><i class="fa-solid fa-brain"></i></div>
+                                    <div class="node-label">Intel Correlator</div>
+                                    <div class="node-val-badge" id="badge-node-intel">-</div>
+                                </div>
+                                
+                                <!-- Outbound Pipeline -->
+                                <div class="node-item node-outbound" id="node-responder" data-node-id="responder">
+                                    <div class="node-icon icon-responder"><i class="fa-solid fa-reply-all"></i></div>
+                                    <div class="node-label">Safe Responder</div>
+                                </div>
+                                <div class="node-item node-outbound" id="node-archiver" data-node-id="archiver">
+                                    <div class="node-icon icon-archiver"><i class="fa-solid fa-database"></i></div>
+                                    <div class="node-label">DB Archiver</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Collapsible technical details drawer -->
+                        <div class="collapsible-container">
+                            <button class="collapsible-header-btn" id="toggle-tech-details">
+                                <span><i class="fa-solid fa-square-rss"></i> View Technical Details (Kaggle Eval / Traces)</span>
+                                <i class="fa-solid fa-chevron-down toggle-icon"></i>
+                            </button>
+                            <div class="collapsible-body hidden" id="tech-details-body">
+                                <div class="report-section-card">
+                                    <div class="report-header">
+                                        <h3>Markdown Incident Report</h3>
+                                        <div class="report-actions">
+                                            <button class="report-btn" id="copy-report-btn"><i class="fa-solid fa-copy"></i> Copy Markdown</button>
+                                            <button class="report-btn" id="print-report-btn"><i class="fa-solid fa-print"></i> Print</button>
+                                        </div>
+                                    </div>
+                                    <div class="report-body">
+                                        <pre class="report-markdown-content" id="report-md-container"></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- TAB 3: SAFETY HISTORY -->
+                <section class="tab-content" id="tab-history">
+                    <div class="history-hero-section">
+                        <h3>Recent Safety Checks</h3>
+                        <p>A history of safety reviews you have performed on messages, domains, and suspicious link folders.</p>
+                    </div>
+                    
+                    <div class="history-controls">
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="history-search" placeholder="Search safety history...">
+                        </div>
+                    </div>
+                    
+                    <div class="history-timeline-cards" id="history-cards-container">
+                        <!-- Dynamic list of history card items -->
+                    </div>
+                </section>
+
+                <!-- TAB 4: COMMUNITY SAFETY TRENDS -->
+                <section class="tab-content" id="tab-analytics">
+                    <div class="metrics-grid">
+                        <div class="metric-mini-card">
+                            <div class="mini-icon blue"><i class="fa-solid fa-shield-heart"></i></div>
+                            <div class="mini-data">
+                                <h4 id="stat-total-scans">0</h4>
+                                <p>Safety Reviews Completed</p>
+                            </div>
+                        </div>
+                        <div class="metric-mini-card">
+                            <div class="mini-icon orange"><i class="fa-solid fa-circle-exclamation"></i></div>
+                            <div class="mini-data">
+                                <h4 id="stat-risk-percent">0%</h4>
+                                <p>Scams Identified Ratio</p>
+                            </div>
+                        </div>
+                        <div class="metric-mini-card">
+                            <div class="mini-icon purple"><i class="fa-solid fa-stopwatch"></i></div>
+                            <div class="mini-data">
+                                <h4 id="stat-avg-latency">0ms</h4>
+                                <p>Checking Speed</p>
+                            </div>
+                        </div>
+                        <div class="metric-mini-card">
+                            <div class="mini-icon green"><i class="fa-solid fa-microscope"></i></div>
+                            <div class="mini-data">
+                                <h4 id="stat-tool-calls">0</h4>
+                                <p>Verification Tools Run</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="charts-row">
+                        <!-- Chart 1: Verdict breakdown -->
+                        <div class="chart-card draggable-card" draggable="true">
+                            <h3><i class="fa-solid fa-chart-pie"></i> Safety Verdicts Breakdown</h3>
+                            <div class="verdict-chart-container">
+                                <div class="custom-bar-chart" id="verdict-bar-chart">
+                                    <!-- Rendered with divs -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chart 2: Scam categories -->
+                        <div class="chart-card draggable-card" draggable="true">
+                            <h3><i class="fa-solid fa-chart-line"></i> Common Scam Categories Identified</h3>
+                            <div class="scam-chart-container" id="scam-type-chart">
+                                <!-- Rendered with divs -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Memory Threat Intelligence Base -->
+                    <div class="threat-intel-card draggable-card" draggable="true">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-shield-halved"></i> Active Threat Indicators List</h3>
+                            <span class="help-text">Known malicious domain names and numbers flagged by our safety network</span>
+                        </div>
+                        <div class="intel-list-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Indicator Category</th>
+                                        <th>Target Value</th>
+                                        <th>Verdict Level</th>
+                                        <th>Previous Attempts</th>
+                                        <th>Last Incident Flag</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="intel-table-body">
+                                    <!-- Threat Intel items -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 5: SAFETY HUB -->
+                <section class="tab-content" id="tab-education">
+                    <div class="education-hero">
+                        <h2><i class="fa-solid fa-circle-check"></i> Cyber Safety Hub</h2>
+                        <p>Quick tips, guides, and lessons to help you spot scams and stay secure online.</p>
+                    </div>
+
+                    <div class="edu-grid">
+                        <div class="edu-card">
+                            <div class="edu-badge red">WARNING SIGNAL</div>
+                            <h3>How to Spot Fake Internships</h3>
+                            <p>Fake job offers often require advance fee deposits for "recruitment software", "laptop shipping", or "certification modules". No real employer will charge you to start working.</p>
+                            <div class="edu-rule"><strong>Golden Rule:</strong> Never send money to get a job or internship.</div>
+                        </div>
+
+                        <div class="edu-card">
+                            <div class="edu-badge orange">DOMAIN VERIFY</div>
+                            <h3>How to Avoid Scholarship Scams</h3>
+                            <p>Check the domain spelling of official listservs. Scammers will mimic brands (like using <code>@gmail.com</code> or <code>@scholarship-govt.cc</code>) instead of governmental/academic <code>.edu</code> or <code>.gov</code> handles.</p>
+                            <div class="edu-rule"><strong>Golden Rule:</strong> Always check official email handles.</div>
+                        </div>
+
+                        <div class="edu-card">
+                            <div class="edu-badge purple">CHAT WARNING</div>
+                            <h3>Safe Online Habits</h3>
+                            <p>Avoid recruiters who demand that all communication, interviews, and contracts be carried out solely on Telegram or WhatsApp chat channels without official portal links.</p>
+                            <div class="edu-rule"><strong>Golden Rule:</strong> Request corporate links or formal verification details.</div>
+                        </div>
+                    </div>
+
+                    <div class="quiz-container">
+                        <h3>📋 Test Your Knowledge</h3>
+                        <div class="quiz-question">
+                            <p><strong>Scenario:</strong> You receive a message on WhatsApp claiming to be an HR coordinator from Amazon India offering ₹10,000 weekly for submitting online movie reviews. They require you to pay ₹500 first to activate your profile account. What should you do?</p>
+                            <div class="quiz-options">
+                                <button class="quiz-opt-btn wrong">A) Pay the ₹500 since it is a small payment and you can earn it back quickly.</button>
+                                <button class="quiz-opt-btn correct">B) Ignore the sender and block their contact. Real companies do not demand money or recruit via WhatsApp chats.</button>
+                                <button class="quiz-opt-btn wrong">C) Ask if you can skip the activation charge and verify manually.</button>
+                            </div>
+                            <div class="quiz-feedback hidden"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 6: ADMIN MODE (Technical & Observability) -->
+                <section class="tab-content" id="tab-admin">
+                    <div class="admin-hero-row">
+                        <h3>Admin Mode & Evaluation Control</h3>
+                        <p>This tab contains technical agent evaluation engines, trace timeline observability logs, and configurations (essential for Kaggle capstone grading).</p>
+                    </div>
+
+                    <div class="observability-tab-selector-row">
+                        <div class="trace-selector">
+                            <label for="trace-case-select">Select Case History Trace:</label>
+                            <select id="trace-case-select">
+                                <option value="">-- Select a Case --</option>
+                            </select>
+                        </div>
+                        <div class="trace-summary-chips" id="trace-summary-chips">
+                            <!-- Latency summary -->
+                        </div>
+                    </div>
+
+                    <div class="admin-dashboard-grid">
+                        
+                        <!-- Col 1: Trace observability -->
+                        <div class="admin-col">
+                            <div class="timeline-card draggable-card" draggable="true">
+                                <h3><i class="fa-solid fa-diagram-project text-blue"></i> Sequential & Parallel Agent Timeline</h3>
+                                <div class="trace-timeline" id="trace-timeline-container">
+                                    <p class="placeholder-text">Please select a case to view agent communication steps.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="tool-calls-card draggable-card" draggable="true">
+                                <h3><i class="fa-solid fa-terminal text-green"></i> Tool Log & SQL Payloads</h3>
+                                <div class="tool-calls-list" id="tool-calls-container">
+                                    <p class="placeholder-text">Payload parameters will load here.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Col 2: Eval testing and parameters -->
+                        <div class="admin-col">
+                            <!-- Evaluation card -->
+                            <div class="eval-card draggable-card" draggable="true">
+                                <div class="card-header">
+                                    <h3><i class="fa-solid fa-list-check text-purple"></i> Evaluation Pipeline</h3>
+                                    <button class="eval-run-btn" id="run-eval-btn"><i class="fa-solid fa-play"></i> Run Case Suite</button>
+                                </div>
+                                <p class="section-desc">Executes our 8 verification agents over standard scam templates to test accuracy & latency metrics.</p>
+                                <div class="eval-table-wrapper">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Content Input</th>
+                                                <th>Target</th>
+                                                <th>Output</th>
+                                                <th>Result</th>
+                                                <th>Speed</th>
+                                                <th>Explanation</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="eval-results-body">
+                                            <!-- Eval outputs -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+ 
+                            <!-- Settings -->
+                            <div class="settings-card draggable-card" draggable="true">
+                                <h3><i class="fa-solid fa-gears text-blue"></i> Alert Threshold Configurations</h3>
+                                <div class="config-group">
+                                    <label for="threshold-high">High Risk Score Threshold:</label>
+                                    <input type="number" id="threshold-high" value="60" min="40" max="90">
+                                </div>
+                                <div class="config-group">
+                                    <label for="threshold-dangerous">Dangerous Score Threshold:</label>
+                                    <input type="number" id="threshold-dangerous" value="85" min="70" max="98">
+                                </div>
+                                <button class="save-settings-btn" id="save-config-btn">Save Configurations</button>
+                            </div>
+ 
+                            <!-- DB Operations -->
+                            <div class="db-actions-card draggable-card" draggable="true">
+                                <h3><i class="fa-solid fa-database text-green"></i> Database Operations</h3>
+                                <div class="db-buttons">
+                                    <button class="db-btn outline" id="clear-db-btn"><i class="fa-solid fa-trash-can"></i> Clear Cases History</button>
+                                    <button class="db-btn" id="reseed-db-btn"><i class="fa-solid fa-arrows-rotate"></i> Reset Threat Memory</button>
+                                </div>
+                            </div>
+                        </div>/div>
+                        </div>
+
+                    </div>
+                </section>
+
+             </div>
+        </main>
+    </div>
+</div>
+
+    <!-- JS -->
+    <script src="script.js"></script>
+</body>
+</html>
