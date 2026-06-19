@@ -64,13 +64,42 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Login Submit flow
+    // Login Submit & Toggle Mode Flow
+    let loginMode = "login"; // "login" or "register"
     const loginForm = document.getElementById("login-form-el");
     const loginSubmitBtn = document.getElementById("login-submit-btn");
     const loginBtnText = loginSubmitBtn.querySelector(".btn-text");
     const loginLoaderText = loginSubmitBtn.querySelector(".btn-loader-text");
     const loginErrorContainer = document.getElementById("login-error-container");
-
+    const loginToggleMode = document.getElementById("login-toggle-mode");
+ 
+    const loginTitleH3 = document.getElementById("login-title-h3");
+    const loginDescP = document.getElementById("login-desc-p");
+    const loginIconI = document.getElementById("login-icon-i");
+ 
+    if (loginToggleMode) {
+        loginToggleMode.addEventListener("click", (e) => {
+            e.preventDefault();
+            loginErrorContainer.classList.add("hidden");
+            
+            if (loginMode === "login") {
+                loginMode = "register";
+                loginTitleH3.textContent = "Create CyberShield Account";
+                loginDescP.textContent = "Register your student safety work credentials";
+                loginIconI.className = "fa-solid fa-user-plus";
+                loginBtnText.innerHTML = 'Create Student Account <i class="fa-solid fa-user-check"></i>';
+                loginToggleMode.textContent = "Already have an account? Sign in";
+            } else {
+                loginMode = "login";
+                loginTitleH3.textContent = "Sign In to CyberShield";
+                loginDescP.textContent = "Launch your student safety work environment";
+                loginIconI.className = "fa-solid fa-lock";
+                loginBtnText.innerHTML = 'Launch Workspace <i class="fa-solid fa-circle-nodes"></i>';
+                loginToggleMode.textContent = "New to CyberShield? Register here";
+            }
+        });
+    }
+ 
     loginForm.addEventListener("submit", (e) => {
         e.preventDefault();
         
@@ -78,11 +107,13 @@ document.addEventListener("DOMContentLoaded", () => {
         loginBtnText.classList.add("hidden");
         loginLoaderText.classList.remove("hidden");
         loginErrorContainer.classList.add("hidden");
-
+ 
         const username = document.getElementById("student-email").value;
         const password = document.getElementById("student-pin").value;
-
-        fetch("/api/user/verify", {
+ 
+        const endpoint = loginMode === "login" ? "/api/user/verify" : "/api/user/register";
+ 
+        fetch(endpoint, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username: username, password: password })
@@ -91,10 +122,22 @@ document.addEventListener("DOMContentLoaded", () => {
             loginSubmitBtn.disabled = false;
             loginBtnText.classList.remove("hidden");
             loginLoaderText.classList.add("hidden");
-
+ 
             if (res.ok) {
-                sessionStorage.setItem("user_authenticated", "true");
-                navigateScreen("screen-app");
+                if (loginMode === "login") {
+                    sessionStorage.setItem("user_authenticated", "true");
+                    navigateScreen("screen-app");
+                } else {
+                    alert("Registration successful! You can now sign in using your credentials.");
+                    // Reset to login mode
+                    loginMode = "login";
+                    loginTitleH3.textContent = "Sign In to CyberShield";
+                    loginDescP.textContent = "Launch your student safety work environment";
+                    loginIconI.className = "fa-solid fa-lock";
+                    loginBtnText.innerHTML = 'Launch Workspace <i class="fa-solid fa-circle-nodes"></i>';
+                    loginToggleMode.textContent = "New to CyberShield? Register here";
+                    document.getElementById("student-pin").value = "";
+                }
             } else {
                 res.json().then(data => {
                     loginErrorContainer.textContent = data.detail || "Authentication Failed. Access Denied.";

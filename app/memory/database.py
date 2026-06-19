@@ -16,6 +16,28 @@ def init_db():
     conn = get_db_connection()
     cursor = conn.cursor()
     
+    # 0. Users table for login and registration
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE,
+        password_hash TEXT,
+        role TEXT DEFAULT 'user'
+    )
+    """)
+    
+    # Seed default admin user if not exists
+    cursor.execute("SELECT COUNT(*) FROM users WHERE role = 'admin'")
+    if cursor.fetchone()[0] == 0:
+        import hashlib
+        admin_pass = os.environ.get("ADMIN_PASSCODE", "cybershield_pvt_2026")
+        admin_hash = hashlib.sha256(admin_pass.encode('utf-8')).hexdigest()
+        admin_user = os.environ.get("ADMIN_USERNAME", "admin")
+        cursor.execute("""
+        INSERT INTO users (username, password_hash, role)
+        VALUES (?, ?, 'admin')
+        """, (admin_user, admin_hash))
+
     # 1. Cases table
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS cases (
@@ -356,4 +378,44 @@ def reseed_memory_bank_db():
     """, seed_data)
     conn.commit()
     conn.close()
+
+# --- User Authentication Operations ---
+
+def create_user_db(username: str, password_raw: str, role: str = 'user') -> bool:
+    """Inserts a new registered user with SHA-256 hashed password into the database."""
+    import hashlib
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Check if user already exists
+    cursor.execute("SELECT COUNT(*) FROM users WHERE username = ?", (username.strip().lower(),))
+    if cursor.fetchone()[0] > 0:
+        conn.close()
+        return False
+        
+    password_hash = hashlib.sha256(password_raw.encode('utf-8')).hexdigest()
+    cursor.execute("""
+    INSERT INTO users (username, password_hash, role)
+    VALUES (?, ?, ?)
+    """, (username.strip().lower(), password_hash, role))
+    conn.commit()
+    conn.close()
+    return True
+
+def authenticate_user_db(username: str, password_raw: str) -> Optional[Dict[str, Any]]:
+    """Authenticates username and raw password against database records."""
+    import hashlib
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    password_hash = hashlib.sha256(password_raw.encode('utf-8')).hexdigest()
+    cursor.execute("""
+    SELECT username, role FROM users 
+    WHERE username = ? AND password_hash = ?
+    """, (username.strip().lower(), password_hash))
+    row = cursor.fetchone()
+    conn.close()
+    if row:
+        return dict(row)
+    return None
 

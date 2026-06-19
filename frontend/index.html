@@ -258,10 +258,10 @@
             <div class="login-card">
                 <div class="login-card-header">
                     <div class="login-logo-circle">
-                        <i class="fa-solid fa-lock"></i>
+                        <i class="fa-solid fa-lock" id="login-icon-i"></i>
                     </div>
-                    <h3>Sign In to CyberShield</h3>
-                    <p>Launch your student safety work environment</p>
+                    <h3 id="login-title-h3">Sign In to CyberShield</h3>
+                    <p id="login-desc-p">Launch your student safety work environment</p>
                 </div>
 
                 <form class="login-form" id="login-form-el" onsubmit="event.preventDefault();">
@@ -287,6 +287,9 @@
                         <span class="btn-text">Launch Workspace <i class="fa-solid fa-circle-nodes"></i></span>
                         <span class="btn-loader-text hidden"><i class="fa-solid fa-spinner fa-spin"></i> Securing session...</span>
                     </button>
+                    <div style="text-align: center; margin-top: 15px;">
+                        <a href="#" id="login-toggle-mode" style="color: var(--color-primary, #00FF66); font-size: 13px; text-decoration: underline; font-weight: 500;">New to CyberShield? Register here</a>
+                    </div>
                 </form>
 
                 <div class="login-card-footer">

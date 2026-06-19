@@ -39,10 +39,14 @@ from app.memory.database import (
     delete_memory_entity_db,
     update_memory_entity_db,
     add_memory_entity_db,
-    reseed_memory_bank_db
+    reseed_memory_bank_db,
+    init_db,
+    create_user_db,
+    authenticate_user_db
 )
 
 setup_telemetry()
+init_db()
 try:
     _, project_id = google.auth.default()
     logging_client = google_cloud_logging.Client()
@@ -120,29 +124,42 @@ def get_admin_key(x_admin_key: str = Header(None, alias="X-Admin-Key")):
 
 @app.post("/api/admin/verify")
 def verify_admin(payload: Dict[str, str]):
-    """Verify private admin username and passcode securely on the server side."""
+    """Verify private admin username and passcode securely on the server side against the database."""
     username = payload.get("username", "")
     key = payload.get("key", "")
     
-    admin_username = os.getenv("ADMIN_USERNAME", "admin")
-    admin_secret = os.getenv("ADMIN_PASSCODE", "cybershield_pvt_2026")
-    
-    if username == admin_username and key == admin_secret:
+    user = authenticate_user_db(username, key)
+    if user and user.get("role") == "admin":
         return {"status": "success", "token": "cybershield_admin_session_token_approved"}
     raise HTTPException(status_code=401, detail="Access Denied: Invalid admin username or password.")
 
 @app.post("/api/user/verify")
 def verify_user(payload: Dict[str, str]):
-    """Verify standard user credentials (predefined single student account) securely on the server."""
+    """Verify standard user credentials securely against the SQLite database."""
     username = payload.get("username", "")
     password = payload.get("password", "")
     
-    required_username = os.getenv("USER_USERNAME", "student@university.edu")
-    required_password = os.getenv("USER_PASSWORD", "cybershield_student_2026")
-    
-    if username == required_username and password == required_password:
+    user = authenticate_user_db(username, password)
+    if user and user.get("role") == "user":
         return {"status": "success", "message": "Authenticated successfully as user."}
     raise HTTPException(status_code=401, detail="Access Denied: Invalid username or password.")
+
+@app.post("/api/user/register")
+def register_user(payload: Dict[str, str]):
+    """Register a new student safety user in the SQLite database."""
+    username = payload.get("username", "")
+    password = payload.get("password", "")
+    
+    if not username or not password:
+        raise HTTPException(status_code=400, detail="Username and password are required.")
+        
+    if username.strip().lower() == "admin":
+        raise HTTPException(status_code=400, detail="Registration error: Cannot register as 'admin'.")
+        
+    success = create_user_db(username, password, role='user')
+    if success:
+        return {"status": "success", "message": "User registered successfully."}
+    raise HTTPException(status_code=400, detail="Registration error: User already exists.")
 
 # --- Admin CRUD Operations for DB Management ---
 
