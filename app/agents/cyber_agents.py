@@ -290,13 +290,24 @@ async def run_cyber_shield_scan(text: str, file_path: Optional[str] = None, mode
         log_trace(case_id, "System", "llm_agent_scan_start", "RUNNING", "Running Google ADK agent scan...", 0)
         t0 = time.time()
         try:
-            from google.adk.runners import Runner
-            from google.adk.sessions import InMemorySessionService
+            # Create a dynamic sub-agents chain to optimize token billing & latency
+            sub_agents = [triage_agent, message_agent]
+            if has_url:
+                sub_agents.append(url_agent)
+            if any(k in combined_input.lower() for k in ["job", "internship", "recruit", "salary", "stipend"]):
+                sub_agents.append(job_agent)
+            
+            sub_agents.extend([intel_agent, advisor_agent, coordinator_agent])
+            
+            dynamic_pipeline = SequentialAgent(
+                name="dynamic_pipeline",
+                sub_agents=sub_agents
+            )
             
             # Create transient session for sequential pipeline
             session_service = InMemorySessionService()
             await session_service.create_session(app_name="app", user_id="user", session_id=case_id)
-            runner = Runner(agent=pipeline_agent, app_name="app", session_service=session_service)
+            runner = Runner(agent=dynamic_pipeline, app_name="app", session_service=session_service)
             
             # Run sequential pipeline to completion
             final_response = ""

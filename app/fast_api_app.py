@@ -107,18 +107,36 @@ async def scan_content(
 def verify_admin(payload: Dict[str, str]):
     """Verify private admin access key securely on the server side."""
     key = payload.get("key")
-    if key == "cybershield_pvt_2026":
+    admin_secret = os.getenv("ADMIN_PASSCODE", "cybershield_pvt_2026")
+    if key == admin_secret:
         return {"status": "success", "token": "cybershield_admin_session_token_approved"}
     raise HTTPException(status_code=401, detail="Access Denied: Invalid private key.")
 
 @app.post("/api/upload")
 async def upload_file(file: UploadFile = File(...)):
-    """Upload screenshots, job flyers, or PDFs to scan."""
+    """Upload screenshots, job flyers, or PDFs securely with validation checks."""
+    allowed_types = ["image/png", "image/jpeg", "image/webp", "application/pdf"]
+    if file.content_type not in allowed_types:
+        raise HTTPException(status_code=400, detail="Invalid file type. Allowed: PNG, JPEG, WEBP, PDF.")
+        
     try:
-        file_path = os.path.join(UPLOAD_DIR, file.filename)
+        # Validate file size (max 5MB to prevent DoS disk exhaustion)
+        MAX_SIZE = 5 * 1024 * 1024
+        contents = await file.read()
+        if len(contents) > MAX_SIZE:
+            raise HTTPException(status_code=413, detail="File too large. Maximum size allowed is 5MB.")
+        
+        # Reset pointer after reading length
+        file.file.seek(0)
+        
+        # Secure the filename against directory traversal attacks
+        safe_name = os.path.basename(file.filename)
+        file_path = os.path.join(UPLOAD_DIR, safe_name)
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
-        return {"status": "success", "file_path": file_path, "filename": file.filename}
+        return {"status": "success", "file_path": file_path, "filename": safe_name}
+    except HTTPException as he:
+        raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"File upload failed: {str(e)}")
 
