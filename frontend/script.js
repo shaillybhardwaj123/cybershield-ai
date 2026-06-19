@@ -86,7 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Logout trigger
     document.getElementById("nav-logout-btn").addEventListener("click", () => {
-        isAdminAuthenticated = false;
         navigateScreen("screen-landing");
     });
 
@@ -158,8 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "results": { title: "Safety Review Details", desc: "How we verified this content for scams" },
         "history": { title: "Safety History", desc: "Recent Safety Checks" },
         "analytics": { title: "Community Safety Trends", desc: "Scam vectors and threat indicators currently reported" },
-        "education": { title: "Safety Hub", desc: "Learn to spot scam patterns and build safe habits" },
-        "admin": { title: "Admin Mode", desc: "Quality evaluations and agent observability metrics (Kaggle Eval)" }
+        "education": { title: "Safety Hub", desc: "Learn to spot scam patterns and build safe habits" }
     };
 
     const quickDemos = [
@@ -237,8 +235,6 @@ document.addEventListener("DOMContentLoaded", () => {
             loadSafetyHistory();
         } else if (tabId === "analytics") {
             loadAnalytics();
-        } else if (tabId === "admin") {
-            populateTraceSelector();
         }
 
         // SVG lines recalculation
@@ -247,34 +243,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    let isAdminAuthenticated = false;
-
     navButtons.forEach(button => {
         button.addEventListener("click", () => {
             const tabId = button.getAttribute("data-tab");
-            if (tabId === "admin" && !isAdminAuthenticated) {
-                const key = prompt("Enter Private Admin Access Key:");
-                if (!key) return;
-                
-                fetch("/api/admin/verify", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ key: key })
-                })
-                .then(res => {
-                    if (res.ok) {
-                        isAdminAuthenticated = true;
-                        switchTab(tabId);
-                    } else {
-                        alert("Access Denied: Invalid private key.");
-                    }
-                })
-                .catch(err => {
-                    alert("Verification error: " + err.message);
-                });
-            } else {
-                switchTab(tabId);
-            }
+            switchTab(tabId);
         });
     });
 
@@ -786,120 +758,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ----------------------------------------------------
-    // Observability Timeline Traces in Admin Mode
-    // ----------------------------------------------------
-    async function populateTraceSelector() {
-        const select = document.getElementById("trace-case-select");
-        select.innerHTML = `<option value="">-- Select a Case --</option>`;
-
-        try {
-            const res = await fetch(`${API_BASE}/api/cases`);
-            const cases = await res.json();
-            
-            cases.forEach(c => {
-                const opt = document.createElement("option");
-                opt.value = c.id;
-                opt.textContent = `${c.id} - ${c.verdict} (${new Date(c.timestamp).toLocaleTimeString()})`;
-                select.appendChild(opt);
-            });
-
-            if (selectedCaseIdForTrace) {
-                select.value = selectedCaseIdForTrace;
-                loadTraceTimeline(selectedCaseIdForTrace);
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    const selectEl = document.getElementById("trace-case-select");
-    selectEl.addEventListener("change", () => {
-        const id = selectEl.value;
-        if (id) {
-            loadTraceTimeline(id);
-        } else {
-            document.getElementById("trace-timeline-container").innerHTML = `<p class="placeholder-text">Please select a case to view agent communication steps.</p>`;
-            document.getElementById("tool-calls-container").innerHTML = `<p class="placeholder-text">Tool invocation payloads and DB metrics will load here.</p>`;
-            document.getElementById("trace-summary-chips").innerHTML = "";
-        }
-    });
-
-    async function loadTraceTimeline(caseId) {
-        try {
-            const res = await fetch(`${API_BASE}/api/traces/${caseId}`);
-            const data = await res.json();
-
-            const timeline = document.getElementById("trace-timeline-container");
-            timeline.innerHTML = "";
-
-            if (data.traces.length === 0) {
-                timeline.innerHTML = `<p class="placeholder-text">No agent execution trace found for this case.</p>`;
-            } else {
-                let totalLatency = 0;
-                let agentCount = new Set();
-                
-                data.traces.forEach(t => {
-                    agentCount.add(t.agent_name);
-                    const item = document.createElement("div");
-                    const statusClass = t.status === "DONE" ? "done" : "running";
-                    const formattedTime = new Date(t.timestamp).toLocaleTimeString();
-                    
-                    item.className = `timeline-item ${statusClass}`;
-                    item.innerHTML = `
-                        <div class="timeline-time">${formattedTime}</div>
-                        <div class="timeline-agent">${t.agent_name}</div>
-                        <div class="timeline-step">${t.step.replace(/_/g, " ")}</div>
-                        <div class="timeline-content">${t.output}</div>
-                        ${t.latency_ms > 0 ? `<div class="timeline-latency"><i class="fa-solid fa-stopwatch"></i> ${t.latency_ms}ms</div>` : ''}
-                    `;
-                    timeline.appendChild(item);
-                    
-                    if (t.step === "complete" || t.step === "final_verdict") {
-                        totalLatency = t.latency_ms;
-                    }
-                });
-
-                const summary = document.getElementById("trace-summary-chips");
-                summary.innerHTML = `
-                    <span class="trace-chip">Speed: <strong>${totalLatency}ms</strong></span>
-                    <span class="trace-chip">Agents: <strong>${agentCount.size - 1}</strong></span>
-                    <span class="trace-chip">Tools: <strong>${data.tool_calls.length}</strong></span>
-                `;
-            }
-
-            const toolContainer = document.getElementById("tool-calls-container");
-            toolContainer.innerHTML = "";
-
-            if (data.tool_calls.length === 0) {
-                toolContainer.innerHTML = `<p class="placeholder-text">No tool calls logged for this case.</p>`;
-            } else {
-                data.tool_calls.forEach(tc => {
-                    const item = document.createElement("div");
-                    item.className = "tool-call-item";
-                    const timeStr = new Date(tc.timestamp).toLocaleTimeString();
-                    
-                    item.innerHTML = `
-                        <div class="tool-call-meta">
-                            <span class="tool-name-lbl"><i class="fa-solid fa-code"></i> ${tc.tool_name}</span>
-                            <span class="tool-time-lbl">${timeStr}</span>
-                        </div>
-                        <div class="tool-payload-box">
-                            <strong>Inputs:</strong><br>
-                            ${JSON.stringify(tc.inputs, null, 2)}<br><br>
-                            <strong>Output:</strong><br>
-                            ${JSON.stringify(tc.output, null, 2)}
-                        </div>
-                    `;
-                    toolContainer.appendChild(item);
-                });
-            }
-
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    // ----------------------------------------------------
     // Quiz Card
     // ----------------------------------------------------
     const quizButtons = document.querySelectorAll(".quiz-opt-btn");
@@ -922,95 +780,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 quizFeedback.innerHTML = `<strong>❌ Incorrect.</strong> Never pay money upfront to get hired. The safe choice is to ignore and block the scam contact immediately.`;
             }
         });
-    });
-
-    // ----------------------------------------------------
-    // Admin Settings & Eval Suite
-    // ----------------------------------------------------
-    const runEvalBtn = document.getElementById("run-eval-btn");
-    const evalResultsBody = document.getElementById("eval-results-body");
-
-    runEvalBtn.addEventListener("click", async () => {
-        runEvalBtn.disabled = true;
-        runEvalBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Running Eval...`;
-        
-        evalResultsBody.innerHTML = "";
-        let accurateCount = 0;
-        
-        for (let i = 0; i < evalCases.length; i++) {
-            const tc = evalCases[i];
-            
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td><code>${tc.text.substring(0, 45)}...</code></td>
-                <td><strong>${tc.expected}</strong></td>
-                <td colspan="4" class="text-muted"><i class="fa-solid fa-spinner fa-spin"></i> Testing case ${i+1}/8...</td>
-            `;
-            evalResultsBody.appendChild(tr);
-
-            const formData = new FormData();
-            formData.append("text", tc.text);
-            formData.append("mode", "deep");
-
-            try {
-                const tStart = new Date().getTime();
-                const res = await fetch(`${API_BASE}/api/scan`, {
-                    method: "POST",
-                    body: formData
-                });
-                const data = await res.json();
-                const tEnd = new Date().getTime();
-                
-                const outputVerdict = data.verdict;
-                const isAccurate = (outputVerdict === tc.expected) || 
-                                   (outputVerdict === "DANGEROUS" && tc.expected === "HIGH RISK") ||
-                                   (outputVerdict === "HIGH RISK" && tc.expected === "DANGEROUS");
-                                   
-                if (isAccurate) accurateCount++;
-
-                const scorePercent = isAccurate ? "100%" : "0%";
-                const accurateClass = isAccurate ? "success" : "fail";
-                const checkIcon = isAccurate ? "fa-circle-check text-green" : "fa-circle-xmark text-red";
-
-                tr.innerHTML = `
-                    <td><code>${tc.text.substring(0, 45)}...</code></td>
-                    <td><strong>${tc.expected}</strong></td>
-                    <td><strong>${outputVerdict}</strong></td>
-                    <td><span class="eval-status-icon ${accurateClass}"><i class="fa-solid ${checkIcon}"></i> ${scorePercent}</span></td>
-                    <td>${tEnd - tStart}ms</td>
-                    <td>${data.explanation.substring(0, 40)}...</td>
-                `;
-            } catch (err) {
-                tr.innerHTML = `
-                    <td><code>${tc.text.substring(0, 45)}...</code></td>
-                    <td><strong>${tc.expected}</strong></td>
-                    <td colspan="4" class="text-red">Error: ${err.message}</td>
-                `;
-            }
-        }
-
-        const accuracyRate = Math.round((accurateCount / evalCases.length) * 100);
-        alert(`Evaluation Complete.\nAccuracy rate: ${accuracyRate}% (${accurateCount}/8 matches)`);
-        
-        runEvalBtn.disabled = false;
-        runEvalBtn.innerHTML = `<i class="fa-solid fa-play"></i> Run Case Suite`;
-    });
-
-    document.getElementById("save-config-btn").addEventListener("click", () => {
-        const high = document.getElementById("threshold-high").value;
-        const dang = document.getElementById("threshold-dangerous").value;
-        alert(`Threshold limits updated:\nHigh Risk: ${high}\nDangerous: ${dang}`);
-    });
-
-    document.getElementById("clear-db-btn").addEventListener("click", () => {
-        if (confirm("Clear all scanned safety cases log?")) {
-            alert("Database records cleared successfully.");
-            loadSafetyHistory();
-        }
-    });
-
-    document.getElementById("reseed-db-btn").addEventListener("click", () => {
-        alert("Long-term threat indicator bank reset to default seed records.");
     });
 
     // ----------------------------------------------------

@@ -96,7 +96,7 @@
                 <marquee scrollamount="5" onmouseover="this.stop();" onmouseout="this.start();">
                     ⚠️ [PLACEMENT ALERT] Phishing recruiting letters demanding upfront software fee logs flagged on university servers. Check templates. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     ⚠️ [LINK VERIFY] Typosquatting credential forms mimicking student portal verification links (e.g. sbi-verification-secure.com) active. Audit URLs. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    ⚠️ [HELPLINE NOTE] Report recruitment scams and fake internship transactions immediately to local safety helpline 1930 or submit via Admin dashboard.
+                    ⚠️ [HELPLINE NOTE] Report recruitment scams and fake internship transactions immediately to local safety helpline 1930.
                 </marquee>
             </div>
         </div>
@@ -331,9 +331,7 @@
                 <button class="nav-btn" data-tab="education">
                     <i class="fa-solid fa-book-open-reader"></i> <span>Safety Hub</span>
                 </button>
-                <button class="nav-btn" data-tab="admin">
-                    <i class="fa-solid fa-screwdriver-wrench"></i> <span>Admin Mode</span>
-                </button>
+
                 <button class="nav-btn logout-btn-item" id="nav-logout-btn">
                     <i class="fa-solid fa-right-from-bracket"></i> <span>Sign Out</span>
                 </button>
@@ -778,99 +776,7 @@
                     </div>
                 </section>
 
-                <!-- TAB 6: ADMIN MODE (Technical & Observability) -->
-                <section class="tab-content" id="tab-admin">
-                    <div class="admin-hero-row">
-                        <h3>Admin Mode & Evaluation Control</h3>
-                        <p>This tab contains technical agent evaluation engines, trace timeline observability logs, and configurations (essential for Kaggle capstone grading).</p>
-                    </div>
 
-                    <div class="observability-tab-selector-row">
-                        <div class="trace-selector">
-                            <label for="trace-case-select">Select Case History Trace:</label>
-                            <select id="trace-case-select">
-                                <option value="">-- Select a Case --</option>
-                            </select>
-                        </div>
-                        <div class="trace-summary-chips" id="trace-summary-chips">
-                            <!-- Latency summary -->
-                        </div>
-                    </div>
-
-                    <div class="admin-dashboard-grid">
-                        
-                        <!-- Col 1: Trace observability -->
-                        <div class="admin-col">
-                            <div class="timeline-card draggable-card" draggable="true">
-                                <h3><i class="fa-solid fa-diagram-project text-blue"></i> Sequential & Parallel Agent Timeline</h3>
-                                <div class="trace-timeline" id="trace-timeline-container">
-                                    <p class="placeholder-text">Please select a case to view agent communication steps.</p>
-                                </div>
-                            </div>
-                            
-                            <div class="tool-calls-card draggable-card" draggable="true">
-                                <h3><i class="fa-solid fa-terminal text-green"></i> Tool Log & SQL Payloads</h3>
-                                <div class="tool-calls-list" id="tool-calls-container">
-                                    <p class="placeholder-text">Payload parameters will load here.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Col 2: Eval testing and parameters -->
-                        <div class="admin-col">
-                            <!-- Evaluation card -->
-                            <div class="eval-card draggable-card" draggable="true">
-                                <div class="card-header">
-                                    <h3><i class="fa-solid fa-list-check text-purple"></i> Evaluation Pipeline</h3>
-                                    <button class="eval-run-btn" id="run-eval-btn"><i class="fa-solid fa-play"></i> Run Case Suite</button>
-                                </div>
-                                <p class="section-desc">Executes our 8 verification agents over standard scam templates to test accuracy & latency metrics.</p>
-                                <div class="eval-table-wrapper">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Content Input</th>
-                                                <th>Target</th>
-                                                <th>Output</th>
-                                                <th>Result</th>
-                                                <th>Speed</th>
-                                                <th>Explanation</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="eval-results-body">
-                                            <!-- Eval outputs -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
- 
-                            <!-- Settings -->
-                            <div class="settings-card draggable-card" draggable="true">
-                                <h3><i class="fa-solid fa-gears text-blue"></i> Alert Threshold Configurations</h3>
-                                <div class="config-group">
-                                    <label for="threshold-high">High Risk Score Threshold:</label>
-                                    <input type="number" id="threshold-high" value="60" min="40" max="90">
-                                </div>
-                                <div class="config-group">
-                                    <label for="threshold-dangerous">Dangerous Score Threshold:</label>
-                                    <input type="number" id="threshold-dangerous" value="85" min="70" max="98">
-                                </div>
-                                <button class="save-settings-btn" id="save-config-btn">Save Configurations</button>
-                            </div>
- 
-                            <!-- DB Operations -->
-                            <div class="db-actions-card draggable-card" draggable="true">
-                                <h3><i class="fa-solid fa-database text-green"></i> Database Operations</h3>
-                                <div class="db-buttons">
-                                    <button class="db-btn outline" id="clear-db-btn"><i class="fa-solid fa-trash-can"></i> Clear Cases History</button>
-                                    <button class="db-btn" id="reseed-db-btn"><i class="fa-solid fa-arrows-rotate"></i> Reset Threat Memory</button>
-                                </div>
-                            </div>
-                        </div>/div>
-                        </div>
-
-                    </div>
-                </section>
 
              </div>
         </main>

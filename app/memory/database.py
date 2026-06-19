@@ -267,3 +267,93 @@ def get_analytics_summary() -> Dict[str, Any]:
         "total_tool_calls": total_tool_calls,
         "tool_counts": tool_counts
     }
+
+# --- Admin Database Operations ---
+
+def delete_case_db(case_id: str):
+    """Deletes a scanned case and all its associated traces and tool logs."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM cases WHERE id = ?", (case_id,))
+    cursor.execute("DELETE FROM observability_traces WHERE case_id = ?", (case_id,))
+    cursor.execute("DELETE FROM tool_calls WHERE case_id = ?", (case_id,))
+    conn.commit()
+    conn.close()
+
+def clear_all_cases_db():
+    """Wipes all scanned cases, traces, and tool call logs completely."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM cases")
+    cursor.execute("DELETE FROM observability_traces")
+    cursor.execute("DELETE FROM tool_calls")
+    conn.commit()
+    conn.close()
+
+def get_all_memory_entities() -> List[Dict[str, Any]]:
+    """Retrieves all memory bank threat indicators, ordered by times seen."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM memory_bank ORDER BY times_seen DESC")
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+def delete_memory_entity_db(entity_id: int):
+    """Deletes a specific threat indicator from the memory bank."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM memory_bank WHERE id = ?", (entity_id,))
+    conn.commit()
+    conn.close()
+
+def update_memory_entity_db(entity_id: int, entity_type: str, entity_value: str, verdict: str, times_seen: int):
+    """Updates the type, value, verdict status, and counts of a threat indicator."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    UPDATE memory_bank
+    SET entity_type = ?, entity_value = ?, verdict = ?, times_seen = ?, last_seen = ?
+    WHERE id = ?
+    """, (entity_type, entity_value.lower().strip(), verdict, times_seen, datetime.now().isoformat(), entity_id))
+    conn.commit()
+    conn.close()
+
+def add_memory_entity_db(entity_type: str, entity_value: str, verdict: str) -> int:
+    """Inserts a new custom threat intelligence entity into the memory bank."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    val = entity_value.lower().strip()
+    cursor.execute("""
+    INSERT INTO memory_bank (entity_type, entity_value, verdict, times_seen, last_seen)
+    VALUES (?, ?, ?, 1, ?)
+    """, (entity_type, val, verdict, datetime.now().isoformat()))
+    new_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    return new_id
+
+def reseed_memory_bank_db():
+    """Wipes threat memory and resets it with default baseline rules."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM memory_bank")
+    seed_data = [
+        ('domain', 'tcs-career-verification.in', 'DANGEROUS', 15, datetime.now().isoformat()),
+        ('domain', 'wipro-hrportal.co.in', 'DANGEROUS', 20, datetime.now().isoformat()),
+        ('domain', 'google-job-offers.cc', 'DANGEROUS', 30, datetime.now().isoformat()),
+        ('domain', 'telegram-tasks.online', 'HIGH RISK', 45, datetime.now().isoformat()),
+        ('phone', '+91 88765 43210', 'DANGEROUS', 12, datetime.now().isoformat()),
+        ('phone', '+91 99999 88888', 'HIGH RISK', 8, datetime.now().isoformat()),
+        ('email', 'recruiter@gmail.com', 'SUSPICIOUS', 5, datetime.now().isoformat()),
+        ('email', 'jobs-tcs-verify@outlook.com', 'HIGH RISK', 18, datetime.now().isoformat()),
+        ('url', 'http://shorturl.at/xyzScam', 'DANGEROUS', 9, datetime.now().isoformat()),
+        ('url', 'https://verify-account-security.net/login', 'DANGEROUS', 34, datetime.now().isoformat())
+    ]
+    cursor.executemany("""
+    INSERT INTO memory_bank (entity_type, entity_value, verdict, times_seen, last_seen)
+    VALUES (?, ?, ?, ?, ?)
+    """, seed_data)
+    conn.commit()
+    conn.close()
+

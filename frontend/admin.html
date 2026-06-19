@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberShield AI - Security Admin Portal</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Admin specific layout styles */
+        :root {
+            --bg-admin-login: radial-gradient(circle at top right, #0d1527 0%, #030712 100%);
+        }
+
+        body.admin-body {
+            background-color: var(--bg-main);
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            color: #1e293b;
+        }
+
+        .light-mode body.admin-body {
+            color: #1e293b;
+        }
+
+        /* Login Screen styling */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top right, #0d1527 0%, #030712 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.4s ease;
+        }
+
+        .login-card {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 40px;
+            width: 420px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            color: #ffffff;
+        }
+
+        .login-logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--color-primary, #00FF66);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .login-logo i {
+            animation: pulse-glow 2s infinite ease-in-out;
+        }
+
+        .login-card p {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .login-form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .login-form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.6);
+            color: #ffffff;
+            font-size: 16px;
+            font-family: monospace;
+            letter-spacing: 2px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: var(--color-primary, #00FF66);
+            box-shadow: 0 0 10px rgba(0, 255, 102, 0.25);
+        }
+
+        .login-submit-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--color-primary, #00FF66) 0%, var(--color-secondary, #39FF14) 100%);
+            color: #030712;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 255, 102, 0.2);
+        }
+
+        .login-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 255, 102, 0.4);
+        }
+
+        /* Database forms & styling */
+        .admin-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .admin-action-bar {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn-danger {
+            background-color: var(--color-dangerous, #FF3333);
+            color: #ffffff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn-danger:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .action-btn-primary {
+            background-color: var(--color-primary, #00FF66);
+            color: #030712;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn-primary:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+
+        /* Admin Table styles */
+        .admin-table-card {
+            background: var(--bg-surface, #ffffff);
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .admin-table-container {
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .admin-table th {
+            background-color: rgba(0, 0, 0, 0.02);
+            padding: 16px 20px;
+            font-weight: 600;
+            color: #64748b;
+            border-bottom: 1.5px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .admin-table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            vertical-align: middle;
+            color: #334155;
+        }
+
+        .admin-table tr:hover td {
+            background-color: rgba(0, 0, 0, 0.005);
+        }
+
+        .admin-table code {
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.04);
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* Action buttons in tables */
+        .tbl-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .tbl-btn.edit-btn {
+            color: var(--color-accent, #0284C7);
+        }
+
+        .tbl-btn.edit-btn:hover {
+            background-color: rgba(2, 132, 199, 0.1);
+        }
+
+        .tbl-btn.delete-btn {
+            color: var(--color-dangerous, #FF3333);
+        }
+
+        .tbl-btn.delete-btn:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Add Threat intelligence form */
+        .threat-form-card {
+            background: var(--bg-surface, #ffffff);
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr auto;
+            gap: 16px;
+            align-items: flex-end;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .form-group input, .form-group select {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            background: #ffffff;
+            font-size: 14px;
+            color: #1e293b;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--color-primary, #00FF66);
+        }
+
+        /* Modal inline editor styling */
+        .edit-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(3, 7, 18, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .edit-modal-content {
+            background: #ffffff;
+            border-radius: 16px;
+            width: 600px;
+            max-width: 90%;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .edit-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+        }
+
+        .edit-modal-header h4 {
+            margin: 0;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .edit-modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .modal-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .modal-form-full {
+            grid-column: span 2;
+        }
+
+        .edit-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            padding-top: 16px;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            border: none;
+        }
+
+        .modal-btn.cancel {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+
+        .modal-btn.save {
+            background-color: var(--color-primary, #00FF66);
+            color: #030712;
+        }
+
+        .verdict-select-pill {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .verdict-select-pill.safe { background-color: rgba(16, 185, 129, 0.15); color: var(--color-safe); }
+        .verdict-select-pill.suspicious { background-color: rgba(245, 158, 11, 0.15); color: var(--color-suspicious); }
+        .verdict-select-pill.high_risk { background-color: rgba(249, 115, 22, 0.15); color: var(--color-high-risk); }
+        .verdict-select-pill.dangerous { background-color: rgba(239, 68, 68, 0.15); color: var(--color-dangerous); }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Adjusting layout for header logo */
+        .admin-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: var(--bg-header, #ffffff);
+            border-bottom: 1.5px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .admin-top-logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 22px;
+            color: var(--color-primary, #00FF66);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .admin-top-nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .admin-nav-item {
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .admin-nav-item:hover, .admin-nav-item.active {
+            color: var(--color-primary, #00FF66);
+            background: rgba(0, 255, 102, 0.08);
+        }
+
+        .admin-nav-item.logout {
+            color: var(--color-dangerous, #FF3333);
+        }
+        .admin-nav-item.logout:hover {
+            background: rgba(239, 68, 68, 0.08);
+        }
+        
+        .admin-container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 30px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body class="admin-body">
+
+    <!-- Auth Login Overlay -->
+    <div id="admin-login-overlay" class="login-overlay">
+        <div class="login-card">
+            <div class="login-logo">
+                <i class="fa-solid fa-shield-halved"></i> CyberShield AI
+            </div>
+            <h3 style="margin-top: 0; margin-bottom: 15px; font-family: 'Space Grotesk'; font-size: 22px;">Security Admin Portal</h3>
+            <p>Authentication required. Enter your developer/grader passcode below to manage verification logs and threat records.</p>
+            <div class="login-form-group">
+                <label for="admin-passcode-input">Admin Private Key</label>
+                <input type="password" id="admin-passcode-input" class="login-input" placeholder="••••••••••••" autocomplete="current-password">
+            </div>
+            <button id="admin-login-submit" class="login-submit-btn">Authorize Session</button>
+            <div id="login-error-msg" style="color: var(--color-dangerous); margin-top: 15px; font-weight: 600; font-size: 14px;" class="hidden"></div>
+        </div>
+    </div>
+
+    <!-- Admin Main Workstation Screen -->
+    <div id="admin-main-workstation" class="hidden">
+        <!-- Top Nav Bar -->
+        <header class="admin-top-bar">
+            <div class="admin-top-logo">
+                <i class="fa-solid fa-terminal"></i>
+                <span>CyberShield <span style="font-family:'Space Grotesk'; font-weight: 300; font-size: 16px; border: 1.5px solid var(--color-primary); padding: 2px 6px; border-radius: 4px;">ADMIN PORTAL</span></span>
+            </div>
+            <nav class="admin-top-nav">
+                <div class="admin-nav-item active" data-admin-tab="cases"><i class="fa-solid fa-folder-open"></i> Cases Database</div>
+                <div class="admin-nav-item" data-admin-tab="memory"><i class="fa-solid fa-brain"></i> Threat Intelligence</div>
+                <div class="admin-nav-item" data-admin-tab="traces"><i class="fa-solid fa-bezier-curve"></i> Trace Observability</div>
+                <div class="admin-nav-item" data-admin-tab="evals"><i class="fa-solid fa-vials"></i> Grader Eval Suite</div>
+                <div class="admin-nav-item logout" id="admin-logout-trigger"><i class="fa-solid fa-right-from-bracket"></i> Exit Portal</div>
+            </nav>
+        </header>
+
+        <!-- Main Body Workstation Area -->
+        <main class="admin-container">
+
+            <!-- TAB 1: CASES DATABASE -->
+            <section class="admin-tab-panel" id="admin-panel-cases">
+                <div class="admin-section-header">
+                    <div>
+                        <h2 style="font-family:'Space Grotesk'; font-weight: 700; margin: 0 0 6px 0;">Safety Verification Cases</h2>
+                        <p style="color:#64748b; margin: 0;">Perform database modifications, audit verification scores, or remove logged cases.</p>
+                    </div>
+                    <div class="admin-action-bar">
+                        <button class="action-btn-danger" id="admin-clear-cases-btn"><i class="fa-solid fa-dumpster-fire"></i> Clear All Cases</button>
+                    </div>
+                </div>
+
+                <div class="admin-table-card">
+                    <div class="admin-table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Scan Preview</th>
+                                    <th>Verdict</th>
+                                    <th>Risk Score</th>
+                                    <th>Scam Type</th>
+                                    <th>Timestamp</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-cases-tbody">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; color: #64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Querying safety database cases records...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: THREAT INTELLIGENCE (MEMORY BANK) -->
+            <section class="admin-tab-panel hidden" id="admin-panel-memory">
+                <div class="admin-section-header">
+                    <div>
+                        <h2 style="font-family:'Space Grotesk'; font-weight: 700; margin: 0 0 6px 0;">Long-Term Threat Intelligence</h2>
+                        <p style="color:#64748b; margin: 0;">Add, modify, or delete threat indicators (domains, emails, phone numbers, URLs) utilized in real-time agent verification rules.</p>
+                    </div>
+                    <div class="admin-action-bar">
+                        <button class="action-btn-danger" id="admin-reset-intel-btn"><i class="fa-solid fa-arrows-rotate"></i> Reset Threat Memory</button>
+                    </div>
+                </div>
+
+                <!-- Add Threat intelligence form -->
+                <div class="threat-form-card">
+                    <h3 style="margin-top: 0; margin-bottom: 16px; font-family:'Space Grotesk'; font-size: 18px; font-weight: 600;"><i class="fa-solid fa-plus text-green"></i> Add Custom Threat Indicator</h3>
+                    <form id="admin-add-threat-form" onsubmit="event.preventDefault();">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="threat-type-input">Indicator Type</label>
+                                <select id="threat-type-input" required>
+                                    <option value="domain">Domain Name</option>
+                                    <option value="phone">Phone Number</option>
+                                    <option value="email">Email Address</option>
+                                    <option value="url">URL Link</option>
+                                    <option value="phrase">Phrase Pattern</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="threat-value-input">Indicator Value</label>
+                                <input type="text" id="threat-value-input" placeholder="e.g. telegram-tasks-pvt.in" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="threat-verdict-input">Verdict Severity</label>
+                                <select id="threat-verdict-input" required>
+                                    <option value="SUSPICIOUS">SUSPICIOUS</option>
+                                    <option value="HIGH RISK">HIGH RISK</option>
+                                    <option value="DANGEROUS" selected>DANGEROUS</option>
+                                    <option value="SAFE">SAFE</option>
+                                </select>
+                            </div>
+                            <button type="button" class="action-btn-primary" id="admin-submit-threat-btn" style="height: 42px;"><i class="fa-solid fa-save"></i> Add Record</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Threat table -->
+                <div class="admin-table-card">
+                    <div class="admin-table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Type</th>
+                                    <th>Indicator Value</th>
+                                    <th>Verdict</th>
+                                    <th>Times Triggered</th>
+                                    <th>Last Seen</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-memory-tbody">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; color: #64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Retrieving threat memory indicators...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: TRACE OBSERVABILITY -->
+            <section class="admin-tab-panel hidden" id="admin-panel-traces">
+                <div class="admin-section-header">
+                    <div>
+                        <h2 style="font-family:'Space Grotesk'; font-weight: 700; margin: 0 0 6px 0;">Agent Observation & Telemetry Logs</h2>
+                        <p style="color:#64748b; margin: 0;">Trace sequential execution pipelines and payload details of ADK multi-agent interactions in real-time.</p>
+                    </div>
+                </div>
+
+                <div class="observability-tab-selector-row" style="background: var(--bg-surface); padding: 20px; border-radius: 12px; margin-bottom: 24px; border: 1.5px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;">
+                    <div class="trace-selector" style="display: flex; align-items: center; gap: 12px;">
+                        <label for="trace-case-select-admin" style="font-weight: 600; color: #475569;">Select Case to Trace:</label>
+                        <select id="trace-case-select-admin" style="padding: 10px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.15); width: 350px;">
+                            <option value="">-- Loading cases --</option>
+                        </select>
+                    </div>
+                    <div class="trace-summary-chips" id="trace-summary-chips-admin" style="display: flex; gap: 8px;">
+                        <!-- Trace stats chips -->
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                    <!-- Col 1: Timeline -->
+                    <div class="timeline-card" style="background: var(--bg-surface); padding: 24px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.05);">
+                        <h3 style="margin-top: 0; margin-bottom: 20px; font-family:'Space Grotesk'; font-size: 18px; font-weight: 600;"><i class="fa-solid fa-diagram-project text-blue"></i> Multi-Agent Execution Pipeline</h3>
+                        <div class="trace-timeline" id="trace-timeline-container-admin" style="display: flex; flex-direction: column; gap: 16px; max-height: 500px; overflow-y: auto; padding-right: 8px;">
+                            <p class="placeholder-text" style="color: #64748b; font-style: italic; text-align: center;">Please select an active safety case from the dropdown above to render execution trails.</p>
+                        </div>
+                    </div>
+                    <!-- Col 2: Tool Logs -->
+                    <div class="tool-calls-card" style="background: var(--bg-surface); padding: 24px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.05);">
+                        <h3 style="margin-top: 0; margin-bottom: 20px; font-family:'Space Grotesk'; font-size: 18px; font-weight: 600;"><i class="fa-solid fa-terminal text-green"></i> System Tool Payloads & SQL Executions</h3>
+                        <div class="tool-calls-list" id="tool-calls-container-admin" style="display: flex; flex-direction: column; gap: 16px; max-height: 500px; overflow-y: auto; padding-right: 8px;">
+                            <p class="placeholder-text" style="color: #64748b; font-style: italic; text-align: center;">System tool payload logs will render here once a case is selected.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: GRADER EVAL SUITE -->
+            <section class="admin-tab-panel hidden" id="admin-panel-evals">
+                <div class="admin-section-header">
+                    <div>
+                        <h2 style="font-family:'Space Grotesk'; font-weight: 700; margin: 0 0 6px 0;">Kaggle Evaluation & Grading Verification Suite</h2>
+                        <p style="color:#64748b; margin: 0;">Runs standard student scam template suites to grade agents accuracy, response safety ratios, and execution latency thresholds.</p>
+                    </div>
+                    <div class="admin-action-bar">
+                        <button class="action-btn-primary" id="run-eval-btn-admin"><i class="fa-solid fa-play"></i> Run Grader Test Suite</button>
+                    </div>
+                </div>
+
+                <div class="admin-table-card">
+                    <div class="admin-table-container">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Input Content Scan Sample</th>
+                                    <th>Target Expected</th>
+                                    <th>Agent Verdict</th>
+                                    <th>Match Grade</th>
+                                    <th>Latency Speed</th>
+                                    <th>Model Reason Explanation</th>
+                                </tr>
+                            </thead>
+                            <tbody id="eval-results-body-admin">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; color: #64748b;"><i class="fa-solid fa-circle-info text-blue"></i> Click the button above to run standard verification pipeline checks.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Inline Case Editing Modal -->
+    <div id="admin-case-edit-modal" class="edit-modal hidden">
+        <div class="edit-modal-content">
+            <div class="edit-modal-header">
+                <h4>Edit Case Safety Log</h4>
+                <button type="button" class="edit-modal-close" onclick="closeCaseModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="admin-case-edit-form" onsubmit="event.preventDefault();">
+                <input type="hidden" id="edit-case-id">
+                <div class="modal-form-grid">
+                    <div class="form-group">
+                        <label for="edit-case-verdict">Verdict</label>
+                        <select id="edit-case-verdict" onchange="updateModalVerdictPill()">
+                            <option value="SAFE">SAFE</option>
+                            <option value="SUSPICIOUS">SUSPICIOUS</option>
+                            <option value="HIGH RISK">HIGH RISK</option>
+                            <option value="DANGEROUS">DANGEROUS</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-case-score">Risk Score (0 - 100)</label>
+                        <input type="number" id="edit-case-score" min="0" max="100" required>
+                    </div>
+                    <div class="form-group modal-form-full">
+                        <label for="edit-case-scam">Scam Classification Type</label>
+                        <input type="text" id="edit-case-scam" required>
+                    </div>
+                    <div class="form-group modal-form-full">
+                        <label for="edit-case-explanation">Explanation Summary</label>
+                        <textarea id="edit-case-explanation" rows="3" style="width: 100%; border: 1px solid rgba(0,0,0,0.15); border-radius: 8px; padding: 10px; font-family: inherit; font-size: 14px; box-sizing: border-box;" required></textarea>
+                    </div>
+                    <div class="form-group modal-form-full">
+                        <label for="edit-case-reply">Safe Reply Recommendation</label>
+                        <textarea id="edit-case-reply" rows="3" style="width: 100%; border: 1px solid rgba(0,0,0,0.15); border-radius: 8px; padding: 10px; font-family: inherit; font-size: 14px; box-sizing: border-box;"></textarea>
+                    </div>
+                </div>
+                <div class="edit-modal-footer">
+                    <button type="button" class="modal-btn cancel" onclick="closeCaseModal()">Cancel</button>
+                    <button type="button" class="modal-btn save" id="admin-save-case-changes-btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Inline Threat Intelligence Editing Modal -->
+    <div id="admin-threat-edit-modal" class="edit-modal hidden">
+        <div class="edit-modal-content">
+            <div class="edit-modal-header">
+                <h4>Edit Threat Indicator Record</h4>
+                <button type="button" class="edit-modal-close" onclick="closeThreatModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="admin-threat-edit-form" onsubmit="event.preventDefault();">
+                <input type="hidden" id="edit-threat-id">
+                <div class="modal-form-grid">
+                    <div class="form-group">
+                        <label for="edit-threat-type">Indicator Type</label>
+                        <select id="edit-threat-type" required>
+                            <option value="domain">Domain Name</option>
+                            <option value="phone">Phone Number</option>
+                            <option value="email">Email Address</option>
+                            <option value="url">URL Link</option>
+                            <option value="phrase">Phrase Pattern</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-threat-verdict">Verdict Severity</label>
+                        <select id="edit-threat-verdict">
+                            <option value="SUSPICIOUS">SUSPICIOUS</option>
+                            <option value="HIGH RISK">HIGH RISK</option>
+                            <option value="DANGEROUS">DANGEROUS</option>
+                            <option value="SAFE">SAFE</option>
+                        </select>
+                    </div>
+                    <div class="form-group modal-form-full">
+                        <label for="edit-threat-value">Indicator Value</label>
+                        <input type="text" id="edit-threat-value" style="width: 100%; box-sizing: border-box;" required>
+                    </div>
+                    <div class="form-group modal-form-full">
+                        <label for="edit-threat-seen">Times Seen Count</label>
+                        <input type="number" id="edit-threat-seen" min="1" style="width: 100%; box-sizing: border-box;" required>
+                    </div>
+                </div>
+                <div class="edit-modal-footer">
+                    <button type="button" class="modal-btn cancel" onclick="closeThreatModal()">Cancel</button>
+                    <button type="button" class="modal-btn save" id="admin-save-threat-changes-btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Javascript Portal Control -->
+    <script>
+        const API_BASE = "";
+
+        // Standard 8 Grader test cases
+        const evalCases = [
+            {
+                text: "🚀 GOOGLE INTERNSHIP OFFER 🚀\nLocation: Work from Home\nStipend: ₹45,000 / Month\nDuration: 3 Months\nNo qualifications required! Students from any stream can apply.\nRegistration fee: ₹499 (Refundable)\nContact HR on Telegram: @GoogleIndiaRecruit\nClick to register: https://google-internship-registration.cc/apply",
+                expected: "HIGH RISK"
+            },
+            {
+                text: "Dear Customer,\nYour State Bank of India account has been flagged for suspicious activity.\nPlease verify your NetBanking credentials immediately or your account will be BLOCKED within 24 hours.\nClick here to verify: https://sbi-verification-secure.com/login.html\nThank you,\nSBI Security Team",
+                expected: "DANGEROUS"
+            },
+            {
+                text: "NATIONAL MERIT SCHOLARSHIP DRIVE 2026\nApply now to get ₹1,50,000 yearly scholarship.\nSupported by Ministry of Student Welfare.\nTo claim your scholarship, deposit a processing fee of ₹1,200 immediately to account: 4433-2211-0987.\nDeadline: TODAY.\nOfficial Link: http://national-welfare-portal.net/verify",
+                expected: "HIGH RISK"
+            },
+            {
+                text: "Hey, are we still meeting at the college library at 4 PM for the project discussion? I brought the reference books for the Kaggle Capstone project.",
+                expected: "SAFE"
+            },
+            {
+                text: "Earn ₹5000 daily by liking YouTube videos from home! No experience required, flexible hours. Daily payouts in crypto or UPI. Contact Telegram: @LikesRecruiterNow",
+                expected: "HIGH RISK"
+            },
+            {
+                text: "Official notice from the Dean's Office: The campus placement registration portal is open. Register with your university credentials at https://placements.university.edu/register before next Friday.",
+                expected: "SAFE"
+            },
+            {
+                text: "Your DHL parcel is held at the sorting office due to an unpaid duty of ₹180. Pay the fee to dispatch your package: http://dhl-package-fees.cc",
+                expected: "HIGH RISK"
+            },
+            {
+                text: "Get a government laptop now! All students enrolled in technical courses are eligible. Fill the form at: http://free-laptop-scheme-gov.cc",
+                expected: "SUSPICIOUS"
+            }
+        ];
+
+        // Active State tracking
+        let sessionKey = sessionStorage.getItem("admin_key") || "";
+
+        // Check verification on load
+        window.addEventListener("DOMContentLoaded", () => {
+            if (sessionKey) {
+                authorizeSuccess(sessionKey);
+            }
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Login click
+            document.getElementById("admin-login-submit").addEventListener("click", performLogin);
+            document.getElementById("admin-passcode-input").addEventListener("keypress", (e) => {
+                if (e.key === "Enter") performLogin();
+            });
+
+            // Logout click
+            document.getElementById("admin-logout-trigger").addEventListener("click", performLogout);
+
+            // Tab navigation clicks
+            const navItems = document.querySelectorAll(".admin-nav-item");
+            navItems.forEach(item => {
+                item.addEventListener("click", () => {
+                    const tabName = item.getAttribute("data-admin-tab");
+                    if (!tabName) return;
+                    
+                    navItems.forEach(n => n.classList.remove("active"));
+                    item.classList.add("active");
+
+                    const panels = document.querySelectorAll(".admin-tab-panel");
+                    panels.forEach(p => p.classList.add("hidden"));
+                    
+                    const activePanel = document.getElementById(`admin-panel-${tabName}`);
+                    if (activePanel) activePanel.classList.remove("hidden");
+
+                    // Trigger load data based on tabs
+                    if (tabName === "cases") loadCasesTable();
+                    else if (tabName === "memory") loadThreatIntelTable();
+                    else if (tabName === "traces") loadTracesDropdown();
+                });
+            });
+
+            // Global buttons setup
+            document.getElementById("admin-clear-cases-btn").addEventListener("click", clearDatabaseCases);
+            document.getElementById("admin-reset-intel-btn").addEventListener("click", resetThreatIntelDatabase);
+            document.getElementById("admin-submit-threat-btn").addEventListener("click", addNewThreatIntelRecord);
+            document.getElementById("run-eval-btn-admin").addEventListener("click", executeGraderEvalSuite);
+            
+            // Save updates
+            document.getElementById("admin-save-case-changes-btn").addEventListener("click", saveCaseChanges);
+            document.getElementById("admin-save-threat-changes-btn").addEventListener("click", saveThreatChanges);
+
+            // Traces case dropdown listener
+            document.getElementById("trace-case-select-admin").addEventListener("change", (e) => {
+                const caseId = e.target.value;
+                if (caseId) {
+                    loadAgentTimelineLogs(caseId);
+                } else {
+                    document.getElementById("trace-timeline-container-admin").innerHTML = `<p class="placeholder-text">Please select an active safety case from the dropdown above to render execution trails.</p>`;
+                    document.getElementById("tool-calls-container-admin").innerHTML = `<p class="placeholder-text">System tool payload logs will render here once a case is selected.</p>`;
+                    document.getElementById("trace-summary-chips-admin").innerHTML = "";
+                }
+            });
+        }
+
+        // --- AUTH SECTION ---
+        async function performLogin() {
+            const passcodeVal = document.getElementById("admin-passcode-input").value;
+            const errorDiv = document.getElementById("login-error-msg");
+            errorDiv.classList.add("hidden");
+
+            if (!passcodeVal.trim()) {
+                errorDiv.textContent = "Please enter an admin passcode key.";
+                errorDiv.classList.remove("hidden");
+                return;
+            }
+
+            try {
+                const res = await fetch("/api/admin/verify", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ key: passcodeVal })
+                });
+
+                if (res.ok) {
+                    sessionKey = passcodeVal;
+                    sessionStorage.setItem("admin_key", sessionKey);
+                    authorizeSuccess(sessionKey);
+                } else {
+                    const data = await res.json();
+                    errorDiv.textContent = data.detail || "Authentication Failed. Access Denied.";
+                    errorDiv.classList.remove("hidden");
+                }
+            } catch (err) {
+                errorDiv.textContent = "Server connection error: " + err.message;
+                errorDiv.classList.remove("hidden");
+            }
+        }
+
+        function authorizeSuccess(key) {
+            document.getElementById("admin-login-overlay").classList.add("hidden");
+            document.getElementById("admin-main-workstation").classList.remove("hidden");
+            // Default load cases
+            loadCasesTable();
+        }
+
+        function performLogout() {
+            sessionKey = "";
+            sessionStorage.removeItem("admin_key");
+            document.getElementById("admin-main-workstation").classList.add("hidden");
+            document.getElementById("admin-login-overlay").classList.remove("hidden");
+            document.getElementById("admin-passcode-input").value = "";
+            document.getElementById("login-error-msg").classList.add("hidden");
+        }
+
+        // Helper Headers generator
+        function getHeaders() {
+            return {
+                "Content-Type": "application/json",
+                "X-Admin-Key": sessionKey
+            };
+        }
+
+        // --- CASES DATABASE CRUD ---
+        async function loadCasesTable() {
+            const tbody = document.getElementById("admin-cases-tbody");
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Fetching records from cases database...</td></tr>`;
+
+            try {
+                const res = await fetch("/api/cases");
+                if (!res.ok) throw new Error("Failed to retrieve cases.");
+                const cases = await res.json();
+
+                if (cases.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #64748b;"><i class="fa-solid fa-database"></i> No case records found in database safety scan tables.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = "";
+                cases.forEach(c => {
+                    const tr = document.createElement("tr");
+                    const dateStr = new Date(c.timestamp).toLocaleString();
+                    const textPreview = c.input_text ? c.input_text.substring(0, 70) + "..." : (c.file_name ? `Uploaded File: ${c.file_name}` : "N/A");
+                    
+                    let badgeClass = "safe";
+                    if (c.verdict === "SUSPICIOUS") badgeClass = "suspicious";
+                    else if (c.verdict === "HIGH RISK") badgeClass = "high_risk";
+                    else if (c.verdict === "DANGEROUS") badgeClass = "dangerous";
+
+                    tr.innerHTML = `
+                        <td><code>${c.id.substring(0, 8)}...</code></td>
+                        <td>${escapeHTML(textPreview)}</td>
+                        <td><span class="verdict-select-pill ${badgeClass}">${c.verdict}</span></td>
+                        <td><strong>${c.risk_score}</strong></td>
+                        <td><span class="verdict-select-pill safe" style="background-color:rgba(0,0,0,0.05); color:#475569;">${c.scam_type}</span></td>
+                        <td style="font-size: 12px; color:#64748b;">${dateStr}</td>
+                        <td>
+                            <button class="tbl-btn edit-btn" onclick="openCaseModal('${c.id}')" title="Edit Case Data"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button class="tbl-btn delete-btn" onclick="deleteCaseRecord('${c.id}')" title="Delete Case"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--color-dangerous);"><i class="fa-solid fa-triangle-exclamation"></i> Error loading cases: ${err.message}</td></tr>`;
+            }
+        }
+
+        async function deleteCaseRecord(caseId) {
+            if (!confirm(`Are you absolutely sure you want to permanently delete Case ${caseId}?\nThis will clear its associated observability timelines and tool calls.`)) return;
+
+            try {
+                const res = await fetch(`/api/admin/cases/${caseId}`, {
+                    method: "DELETE",
+                    headers: getHeaders()
+                });
+
+                if (res.ok) {
+                    alert("Case record and trace timelines deleted successfully.");
+                    loadCasesTable();
+                } else {
+                    const data = await res.json();
+                    alert("Delete Failed: " + (data.detail || "Server refusal. Verify passcode status."));
+                }
+            } catch (err) {
+                alert("Server request error: " + err.message);
+            }
+        }
+
+        async function openCaseModal(caseId) {
+            try {
+                const res = await fetch(`/api/cases/${caseId}`);
+                if (!res.ok) throw new Error("Could not load case details.");
+                const data = await res.json();
+
+                document.getElementById("edit-case-id").value = data.id;
+                document.getElementById("edit-case-verdict").value = data.verdict;
+                document.getElementById("edit-case-score").value = data.risk_score;
+                document.getElementById("edit-case-scam").value = data.scam_type;
+                document.getElementById("edit-case-explanation").value = data.explanation || "";
+                document.getElementById("edit-case-reply").value = data.safe_reply || "";
+
+                document.getElementById("admin-case-edit-modal").classList.remove("hidden");
+            } catch (err) {
+                alert("Error launching editor details: " + err.message);
+            }
+        }
+
+        function closeCaseModal() {
+            document.getElementById("admin-case-edit-modal").classList.add("hidden");
+        }
+
+        async function saveCaseChanges() {
+            const caseId = document.getElementById("edit-case-id").value;
+            const payload = {
+                verdict: document.getElementById("edit-case-verdict").value,
+                risk_score: parseInt(document.getElementById("edit-case-score").value, 10),
+                scam_type: document.getElementById("edit-case-scam").value,
+                explanation: document.getElementById("edit-case-explanation").value,
+                safe_reply: document.getElementById("edit-case-reply").value
+            };
+
+            try {
+                const res = await fetch(`/api/admin/cases/${caseId}`, {
+                    method: "PUT",
+                    headers: getHeaders(),
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    alert("Case records updated successfully.");
+                    closeCaseModal();
+                    loadCasesTable();
+                } else {
+                    const error = await res.json();
+                    alert("Update Failed: " + (error.detail || "Database write rejected."));
+                }
+            } catch (err) {
+                alert("Save Changes Error: " + err.message);
+            }
+        }
+
+        async function clearDatabaseCases() {
+            if (!confirm("WARNING!\nThis action will erase all case history logs, observabilities, and tool executions permanently.\nDo you wish to proceed?")) return;
+
+            try {
+                const res = await fetch("/api/admin/db/clear-cases", {
+                    method: "POST",
+                    headers: getHeaders()
+                });
+
+                if (res.ok) {
+                    alert("Case database logs cleared successfully.");
+                    loadCasesTable();
+                } else {
+                    const data = await res.json();
+                    alert("Clear Database Failed: " + (data.detail || "Server error. Check passcode."));
+                }
+            } catch (err) {
+                alert("Clear Cases error: " + err.message);
+            }
+        }
+
+        // --- THREAT INTELLIGENCE (MEMORY BANK) CRUD ---
+        async function loadThreatIntelTable() {
+            const tbody = document.getElementById("admin-memory-tbody");
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Retrieving data from threat intelligence tables...</td></tr>`;
+
+            try {
+                const res = await fetch("/api/admin/memory", {
+                    headers: getHeaders()
+                });
+
+                if (!res.ok) throw new Error("Could not retrieve memory entities.");
+                const data = await res.json();
+
+                if (data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #64748b;"><i class="fa-solid fa-brain"></i> No threat indicator records found in database rules.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = "";
+                data.forEach(t => {
+                    const tr = document.createElement("tr");
+                    const dateStr = t.last_seen ? new Date(t.last_seen).toLocaleString() : "N/A";
+                    
+                    let badgeClass = "safe";
+                    if (t.verdict === "SUSPICIOUS") badgeClass = "suspicious";
+                    else if (t.verdict === "HIGH RISK") badgeClass = "high_risk";
+                    else if (t.verdict === "DANGEROUS") badgeClass = "dangerous";
+
+                    tr.innerHTML = `
+                        <td><code>${t.id}</code></td>
+                        <td><span class="verdict-select-pill safe" style="background-color:rgba(0,0,0,0.05); color:#475569;">${t.entity_type}</span></td>
+                        <td><code>${escapeHTML(t.entity_value)}</code></td>
+                        <td><span class="verdict-select-pill ${badgeClass}">${t.verdict}</span></td>
+                        <td><strong>${t.times_seen}</strong></td>
+                        <td style="font-size:12px; color:#64748b;">${dateStr}</td>
+                        <td>
+                            <button class="tbl-btn edit-btn" onclick="openThreatModal('${t.id}', '${t.entity_type}', '${escapeHTML(t.entity_value)}', '${t.verdict}', ${t.times_seen})" title="Edit Threat Indicator"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button class="tbl-btn delete-btn" onclick="deleteThreatIntelRecord(${t.id})" title="Delete Indicator"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--color-dangerous);"><i class="fa-solid fa-triangle-exclamation"></i> Error querying memory: ${err.message}</td></tr>`;
+            }
+        }
+
+        async function addNewThreatIntelRecord() {
+            const type = document.getElementById("threat-type-input").value;
+            const value = document.getElementById("threat-value-input").value;
+            const verdict = document.getElementById("threat-verdict-input").value;
+
+            if (!value.trim()) {
+                alert("Please fill indicator value.");
+                return;
+            }
+
+            try {
+                const res = await fetch("/api/admin/memory", {
+                    method: "POST",
+                    headers: getHeaders(),
+                    body: JSON.stringify({
+                        entity_type: type,
+                        entity_value: value,
+                        verdict: verdict
+                    })
+                });
+
+                if (res.ok) {
+                    alert("Threat intelligence record inserted successfully.");
+                    document.getElementById("threat-value-input").value = "";
+                    loadThreatIntelTable();
+                } else {
+                    const data = await res.json();
+                    alert("Insertion Failed: " + (data.detail || "Verification failure."));
+                }
+            } catch (err) {
+                alert("Insertion error: " + err.message);
+            }
+        }
+
+        async function deleteThreatIntelRecord(id) {
+            if (!confirm(`Confirm deletion of Threat Intelligence ID ${id}?`)) return;
+
+            try {
+                const res = await fetch(`/api/admin/memory/${id}`, {
+                    method: "DELETE",
+                    headers: getHeaders()
+                });
+
+                if (res.ok) {
+                    alert("Threat indicator deleted successfully.");
+                    loadThreatIntelTable();
+                } else {
+                    const err = await res.json();
+                    alert("Delete Failed: " + (err.detail || "Server rejected."));
+                }
+            } catch (err) {
+                alert("Server request failed: " + err.message);
+            }
+        }
+
+        function openThreatModal(id, type, value, verdict, timesSeen) {
+            document.getElementById("edit-threat-id").value = id;
+            document.getElementById("edit-threat-type").value = type;
+            document.getElementById("edit-threat-value").value = value;
+            document.getElementById("edit-threat-verdict").value = verdict;
+            document.getElementById("edit-threat-seen").value = timesSeen;
+
+            document.getElementById("admin-threat-edit-modal").classList.remove("hidden");
+        }
+
+        function closeThreatModal() {
+            document.getElementById("admin-threat-edit-modal").classList.add("hidden");
+        }
+
+        async function saveThreatChanges() {
+            const id = document.getElementById("edit-threat-id").value;
+            const payload = {
+                entity_type: document.getElementById("edit-threat-type").value,
+                entity_value: document.getElementById("edit-threat-value").value,
+                verdict: document.getElementById("edit-threat-verdict").value,
+                times_seen: parseInt(document.getElementById("edit-threat-seen").value, 10)
+            };
+
+            try {
+                const res = await fetch(`/api/admin/memory/${id}`, {
+                    method: "PUT",
+                    headers: getHeaders(),
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    alert("Threat indicator successfully updated.");
+                    closeThreatModal();
+                    loadThreatIntelTable();
+                } else {
+                    const data = await res.json();
+                    alert("Update Refused: " + (data.detail || "Database write failure."));
+                }
+            } catch (err) {
+                alert("Update request failed: " + err.message);
+            }
+        }
+
+        async function resetThreatIntelDatabase() {
+            if (!confirm("Are you sure you want to reset threat intelligence indicators?\nThis will clear all current records and restore baseline default rules.")) return;
+
+            try {
+                const res = await fetch("/api/admin/db/reset-threat-memory", {
+                    method: "POST",
+                    headers: getHeaders()
+                });
+
+                if (res.ok) {
+                    alert("Threat intelligence database reseeded successfully.");
+                    loadThreatIntelTable();
+                } else {
+                    const data = await res.json();
+                    alert("Reset Failed: " + (data.detail || "Passcode verification failure."));
+                }
+            } catch (err) {
+                alert("Reseed request error: " + err.message);
+            }
+        }
+
+        // --- TRACE OBSERVABILITY SECTION ---
+        async function loadTracesDropdown() {
+            const select = document.getElementById("trace-case-select-admin");
+            select.innerHTML = `<option value="">-- Loading Case Options --</option>`;
+
+            try {
+                const res = await fetch("/api/cases");
+                if (!res.ok) throw new Error("Could not retrieve safety cases.");
+                const cases = await res.json();
+
+                if (cases.length === 0) {
+                    select.innerHTML = `<option value="">-- No Active Cases in DB --</option>`;
+                    return;
+                }
+
+                select.innerHTML = `<option value="">-- Select a Case --</option>`;
+                cases.forEach(c => {
+                    const opt = document.createElement("option");
+                    opt.value = c.id;
+                    opt.textContent = `${c.id.substring(0, 8)}... - ${c.verdict} (${new Date(c.timestamp).toLocaleTimeString()})`;
+                    select.appendChild(opt);
+                });
+            } catch (err) {
+                select.innerHTML = `<option value="">-- Error: ${err.message} --</option>`;
+            }
+        }
+
+        async function loadAgentTimelineLogs(caseId) {
+            try {
+                const res = await fetch(`/api/traces/${caseId}`);
+                if (!res.ok) throw new Error("Failed to fetch traces.");
+                const data = await res.json();
+
+                const timeline = document.getElementById("trace-timeline-container-admin");
+                timeline.innerHTML = "";
+
+                if (data.traces.length === 0) {
+                    timeline.innerHTML = `<p class="placeholder-text" style="color:#64748b; font-style:italic; text-align:center;">No agent execution telemetry logs found for this case.</p>`;
+                } else {
+                    let totalLatency = 0;
+                    let agentCount = new Set();
+                    
+                    data.traces.forEach(t => {
+                        agentCount.add(t.agent_name);
+                        const item = document.createElement("div");
+                        const statusClass = t.status === "DONE" ? "success" : "warning";
+                        const formattedTime = new Date(t.timestamp).toLocaleTimeString();
+                        
+                        item.className = `timeline-item`;
+                        item.style.borderLeft = `3.5px solid ${t.status === "DONE" ? 'var(--color-safe)' : 'var(--color-suspicious)'}`;
+                        item.style.padding = "12px";
+                        item.style.background = "rgba(0,0,0,0.02)";
+                        item.style.borderRadius = "6px";
+                        item.style.marginBottom = "10px";
+                        
+                        item.innerHTML = `
+                            <div class="timeline-meta" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:12px; color:#64748b;">
+                                <span style="font-weight:700; color:#1e293b;"><i class="fa-solid fa-robot"></i> ${t.agent_name}</span>
+                                <span>${formattedTime} | ${t.latency_ms > 0 ? `<i class="fa-solid fa-stopwatch"></i> ${t.latency_ms}ms` : ''}</span>
+                            </div>
+                            <div class="timeline-step" style="font-size:13px; font-weight:600; color:#475569; margin-bottom:4px;">
+                                Step: <code style="font-family:monospace; background:rgba(0,0,0,0.05); padding:2px 4px; border-radius:3px;">${t.step.replace(/_/g, " ")}</code> | Status: <span style="font-weight:700; color:${t.status==='DONE' ? 'green' : 'orange'}">${t.status}</span>
+                            </div>
+                            <div class="timeline-content" style="font-size:13px; color:#334155; max-height:80px; overflow-y:auto; font-family:monospace; background:#0f172a; color:#f8fafc; padding:8px; border-radius:4px; margin-top:6px;">
+                                ${escapeHTML(t.output)}
+                            </div>
+                        `;
+                        timeline.appendChild(item);
+                        
+                        if (t.step === "complete" || t.step === "final_verdict") {
+                            totalLatency = t.latency_ms;
+                        }
+                    });
+
+                    const summary = document.getElementById("trace-summary-chips-admin");
+                    summary.innerHTML = `
+                        <span class="trace-chip" style="background:#f1f5f9; padding:6px 12px; border-radius:20px; font-size:12px; font-weight:700;">Latency: <strong>${totalLatency}ms</strong></span>
+                        <span class="trace-chip" style="background:#f1f5f9; padding:6px 12px; border-radius:20px; font-size:12px; font-weight:700;">Agents Checked: <strong>${agentCount.size - 1}</strong></span>
+                        <span class="trace-chip" style="background:#f1f5f9; padding:6px 12px; border-radius:20px; font-size:12px; font-weight:700;">Tool Queries: <strong>${data.tool_calls.length}</strong></span>
+                    `;
+                }
+
+                // Render tool logs
+                const toolContainer = document.getElementById("tool-calls-container-admin");
+                toolContainer.innerHTML = "";
+
+                if (data.tool_calls.length === 0) {
+                    toolContainer.innerHTML = `<p class="placeholder-text" style="color:#64748b; font-style:italic; text-align:center;">No tool calls logged for this case.</p>`;
+                } else {
+                    data.tool_calls.forEach(tc => {
+                        const item = document.createElement("div");
+                        item.className = "tool-call-item";
+                        item.style.padding = "12px";
+                        item.style.background = "rgba(0,0,0,0.02)";
+                        item.style.borderRadius = "6px";
+                        item.style.marginBottom = "10px";
+                        
+                        const timeStr = new Date(tc.timestamp).toLocaleTimeString();
+                        
+                        item.innerHTML = `
+                            <div class="tool-call-meta" style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px; color:#64748b;">
+                                <span class="tool-name-lbl" style="font-weight:700; color:#1e293b;"><i class="fa-solid fa-code"></i> ${tc.tool_name}</span>
+                                <span class="tool-time-lbl">${timeStr}</span>
+                            </div>
+                            <div class="tool-payload-box" style="font-size:12px; font-family:monospace; background:#0f172a; color:#f8fafc; padding:8px; border-radius:4px; max-height:120px; overflow-y:auto;">
+                                <strong>Inputs:</strong><br>
+                                ${escapeHTML(JSON.stringify(tc.inputs, null, 2))}<br><br>
+                                <strong>Output:</strong><br>
+                                ${escapeHTML(JSON.stringify(tc.output, null, 2))}
+                            </div>
+                        `;
+                        toolContainer.appendChild(item);
+                    });
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Error loading timeline: " + err.message);
+            }
+        }
+
+        // --- GRADER EVAL SUITE ---
+        async function executeGraderEvalSuite() {
+            const runBtn = document.getElementById("run-eval-btn-admin");
+            const tbody = document.getElementById("eval-results-body-admin");
+            
+            runBtn.disabled = true;
+            runBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Running Evaluations...`;
+            tbody.innerHTML = "";
+
+            let accurateMatches = 0;
+
+            for (let i = 0; i < evalCases.length; i++) {
+                const tc = evalCases[i];
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td><code>${escapeHTML(tc.text.substring(0, 50))}...</code></td>
+                    <td><strong>${tc.expected}</strong></td>
+                    <td colspan="4" style="color:#64748b; font-style:italic;"><i class="fa-solid fa-spinner fa-spin"></i> Processing test case ${i+1}/8...</td>
+                `;
+                tbody.appendChild(tr);
+
+                const formData = new FormData();
+                formData.append("text", tc.text);
+                formData.append("mode", "deep");
+
+                try {
+                    const startT = new Date().getTime();
+                    const res = await fetch("/api/scan", {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    if (!res.ok) throw new Error("API Scan Error");
+                    const data = await res.json();
+                    const endT = new Date().getTime();
+
+                    const outputVerdict = data.verdict;
+                    const isAccurate = (outputVerdict === tc.expected) || 
+                                       (outputVerdict === "DANGEROUS" && tc.expected === "HIGH RISK") ||
+                                       (outputVerdict === "HIGH RISK" && tc.expected === "DANGEROUS");
+
+                    if (isAccurate) accurateMatches++;
+
+                    const matchPct = isAccurate ? "100%" : "0%";
+                    const colorClass = isAccurate ? "green" : "red";
+                    const iconName = isAccurate ? "fa-circle-check" : "fa-circle-xmark";
+
+                    tr.innerHTML = `
+                        <td><code>${escapeHTML(tc.text.substring(0, 50))}...</code></td>
+                        <td><strong>${tc.expected}</strong></td>
+                        <td><strong>${outputVerdict}</strong></td>
+                        <td><span style="color:${colorClass}; font-weight:700;"><i class="fa-solid ${iconName}"></i> ${matchPct}</span></td>
+                        <td>${endT - startT}ms</td>
+                        <td style="font-size:12px; color:#64748b;">${escapeHTML(data.explanation.substring(0, 80))}...</td>
+                    `;
+                } catch (err) {
+                    tr.innerHTML = `
+                        <td><code>${escapeHTML(tc.text.substring(0, 50))}...</code></td>
+                        <td><strong>${tc.expected}</strong></td>
+                        <td colspan="4" style="color:var(--color-dangerous); font-weight:600;"><i class="fa-solid fa-triangle-exclamation"></i> Test failed: ${err.message}</td>
+                    `;
+                }
+            }
+
+            const accuracyRate = Math.round((accurateMatches / evalCases.length) * 100);
+            alert(`Evaluation Complete!\nAccuracy rate: ${accuracyRate}% (${accurateMatches}/${evalCases.length} matches)`);
+            runBtn.disabled = false;
+            runBtn.innerHTML = `<i class="fa-solid fa-play"></i> Run Grader Test Suite`;
+        }
+
+        // --- HELPER UTILITIES ---
+        function escapeHTML(str) {
+            if (!str) return "";
+            return str.replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag] || tag)
+            );
+        }
+
+        function updateModalVerdictPill() {
+            // updates select border details if needed
+        }
+    </script>
+</body>
+</html>

@@ -16,7 +16,7 @@ import shutil
 from typing import Optional, List, Dict, Any
 
 import google.auth
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
@@ -31,7 +31,15 @@ from app.memory.database import (
     get_case,
     get_traces_for_case,
     get_tool_calls_for_case,
-    get_analytics_summary
+    get_analytics_summary,
+    save_case,
+    delete_case_db,
+    clear_all_cases_db,
+    get_all_memory_entities,
+    delete_memory_entity_db,
+    update_memory_entity_db,
+    add_memory_entity_db,
+    reseed_memory_bank_db
 )
 
 setup_telemetry()
@@ -103,6 +111,13 @@ async def scan_content(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Scan execution failed: {str(e)}")
 
+def get_admin_key(x_admin_key: str = Header(None, alias="X-Admin-Key")):
+    """Security dependency checking for correct admin secret passcode."""
+    admin_secret = os.getenv("ADMIN_PASSCODE", "cybershield_pvt_2026")
+    if not x_admin_key or x_admin_key != admin_secret:
+        raise HTTPException(status_code=401, detail="Access Denied: Invalid or missing admin key.")
+    return x_admin_key
+
 @app.post("/api/admin/verify")
 def verify_admin(payload: Dict[str, str]):
     """Verify private admin access key securely on the server side."""
@@ -111,6 +126,105 @@ def verify_admin(payload: Dict[str, str]):
     if key == admin_secret:
         return {"status": "success", "token": "cybershield_admin_session_token_approved"}
     raise HTTPException(status_code=401, detail="Access Denied: Invalid private key.")
+
+# --- Admin CRUD Operations for DB Management ---
+
+@app.delete("/api/admin/cases/{case_id}")
+def delete_case(case_id: str, admin_key: str = Depends(get_admin_key)):
+    """Securely deletes a scam verification case by ID."""
+    try:
+        delete_case_db(case_id)
+        return {"status": "success", "message": f"Case {case_id} deleted successfully."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.put("/api/admin/cases/{case_id}")
+def update_case(case_id: str, payload: Dict[str, Any], admin_key: str = Depends(get_admin_key)):
+    """Securely updates database records of a case (e.g. verdicts, scores, explanation)."""
+    try:
+        # Load existing case to preserve structure
+        case = get_case(case_id)
+        if not case:
+            raise HTTPException(status_code=404, detail="Case not found.")
+        
+        # Overlay new fields from payload
+        for k, v in payload.items():
+            case[k] = v
+            
+        save_case(case)
+        return {"status": "success", "case": case}
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/admin/memory")
+def list_memory_entities(admin_key: str = Depends(get_admin_key)):
+    """Securely fetches all memory-bank threat entities (domains, phones, emails, URLs)."""
+    try:
+        return get_all_memory_entities()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/admin/memory")
+def create_memory_entity(payload: Dict[str, Any], admin_key: str = Depends(get_admin_key)):
+    """Securely adds a new threat intelligence entity to memory bank."""
+    try:
+        entity_type = payload.get("entity_type")
+        entity_value = payload.get("entity_value")
+        verdict = payload.get("verdict")
+        
+        if not entity_type or not entity_value or not verdict:
+            raise HTTPException(status_code=400, detail="Missing required threat intelligence parameters.")
+            
+        new_id = add_memory_entity_db(entity_type, entity_value, verdict)
+        return {"status": "success", "id": new_id, "entity_type": entity_type, "entity_value": entity_value, "verdict": verdict}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.put("/api/admin/memory/{entity_id}")
+def edit_memory_entity(entity_id: int, payload: Dict[str, Any], admin_key: str = Depends(get_admin_key)):
+    """Securely edits a threat entity (type, value, verdict status, or verification counters)."""
+    try:
+        entity_type = payload.get("entity_type")
+        entity_value = payload.get("entity_value")
+        verdict = payload.get("verdict")
+        times_seen = payload.get("times_seen", 1)
+        
+        if not entity_type or not entity_value or not verdict:
+            raise HTTPException(status_code=400, detail="Missing threat update parameters.")
+            
+        update_memory_entity_db(entity_id, entity_type, entity_value, verdict, times_seen)
+        return {"status": "success", "message": f"Threat indicator {entity_id} updated."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/api/admin/memory/{entity_id}")
+def delete_memory_entity(entity_id: int, admin_key: str = Depends(get_admin_key)):
+    """Securely deletes a threat entity from memory bank."""
+    try:
+        delete_memory_entity_db(entity_id)
+        return {"status": "success", "message": f"Threat indicator {entity_id} deleted."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/admin/db/clear-cases")
+def clear_cases(admin_key: str = Depends(get_admin_key)):
+    """Securely clears all parsed safety cases logs."""
+    try:
+        clear_all_cases_db()
+        return {"status": "success", "message": "Database cases and trace logs cleared."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/admin/db/reset-threat-memory")
+def reset_threat_memory(admin_key: str = Depends(get_admin_key)):
+    """Securely clears and reseeds baseline threat memory bank database."""
+    try:
+        reseed_memory_bank_db()
+        return {"status": "success", "message": "Threat memory intelligence database reseeded to baseline rules."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/upload")
 async def upload_file(file: UploadFile = File(...)):
@@ -186,6 +300,11 @@ for r in list(app.routes):
 def read_root():
     """Redirect roots to frontend dashboard page."""
     return RedirectResponse(url="/static/index.html")
+
+@app.get("/admin")
+def read_admin():
+    """Redirect admin path to secure admin panel."""
+    return RedirectResponse(url="/static/admin.html")
 
 
 # Main execution
