@@ -120,12 +120,29 @@ def get_admin_key(x_admin_key: str = Header(None, alias="X-Admin-Key")):
 
 @app.post("/api/admin/verify")
 def verify_admin(payload: Dict[str, str]):
-    """Verify private admin access key securely on the server side."""
-    key = payload.get("key")
+    """Verify private admin username and passcode securely on the server side."""
+    username = payload.get("username", "")
+    key = payload.get("key", "")
+    
+    admin_username = os.getenv("ADMIN_USERNAME", "admin")
     admin_secret = os.getenv("ADMIN_PASSCODE", "cybershield_pvt_2026")
-    if key == admin_secret:
+    
+    if username == admin_username and key == admin_secret:
         return {"status": "success", "token": "cybershield_admin_session_token_approved"}
-    raise HTTPException(status_code=401, detail="Access Denied: Invalid private key.")
+    raise HTTPException(status_code=401, detail="Access Denied: Invalid admin username or password.")
+
+@app.post("/api/user/verify")
+def verify_user(payload: Dict[str, str]):
+    """Verify standard user credentials (predefined single student account) securely on the server."""
+    username = payload.get("username", "")
+    password = payload.get("password", "")
+    
+    required_username = os.getenv("USER_USERNAME", "student@university.edu")
+    required_password = os.getenv("USER_PASSWORD", "cybershield_student_2026")
+    
+    if username == required_username and password == required_password:
+        return {"status": "success", "message": "Authenticated successfully as user."}
+    raise HTTPException(status_code=401, detail="Access Denied: Invalid username or password.")
 
 # --- Admin CRUD Operations for DB Management ---
 

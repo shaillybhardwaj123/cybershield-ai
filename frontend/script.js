@@ -25,6 +25,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Check user session auth on page load
+    if (sessionStorage.getItem("user_authenticated") === "true") {
+        navigateScreen("screen-app");
+    } else {
+        navigateScreen("screen-landing");
+    }
+
     // Landing screen triggers
     document.getElementById("landing-goto-login-btn").addEventListener("click", () => {
         navigateScreen("screen-login");
@@ -62,6 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const loginSubmitBtn = document.getElementById("login-submit-btn");
     const loginBtnText = loginSubmitBtn.querySelector(".btn-text");
     const loginLoaderText = loginSubmitBtn.querySelector(".btn-loader-text");
+    const loginErrorContainer = document.getElementById("login-error-container");
 
     loginForm.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -69,23 +77,43 @@ document.addEventListener("DOMContentLoaded", () => {
         loginSubmitBtn.disabled = true;
         loginBtnText.classList.add("hidden");
         loginLoaderText.classList.remove("hidden");
+        loginErrorContainer.classList.add("hidden");
 
-        // Simulate session setup and key verification
-        setTimeout(() => {
+        const username = document.getElementById("student-email").value;
+        const password = document.getElementById("student-pin").value;
+
+        fetch("/api/user/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username: username, password: password })
+        })
+        .then(res => {
             loginSubmitBtn.disabled = false;
             loginBtnText.classList.remove("hidden");
             loginLoaderText.classList.add("hidden");
-            navigateScreen("screen-app");
-        }, 1200);
-    });
 
-    // Guest entry trigger
-    document.getElementById("login-guest-btn").addEventListener("click", () => {
-        navigateScreen("screen-app");
+            if (res.ok) {
+                sessionStorage.setItem("user_authenticated", "true");
+                navigateScreen("screen-app");
+            } else {
+                res.json().then(data => {
+                    loginErrorContainer.textContent = data.detail || "Authentication Failed. Access Denied.";
+                    loginErrorContainer.classList.remove("hidden");
+                });
+            }
+        })
+        .catch(err => {
+            loginSubmitBtn.disabled = false;
+            loginBtnText.classList.remove("hidden");
+            loginLoaderText.classList.add("hidden");
+            loginErrorContainer.textContent = "Connection error: " + err.message;
+            loginErrorContainer.classList.remove("hidden");
+        });
     });
 
     // Logout trigger
     document.getElementById("nav-logout-btn").addEventListener("click", () => {
+        sessionStorage.removeItem("user_authenticated");
         navigateScreen("screen-landing");
     });
 

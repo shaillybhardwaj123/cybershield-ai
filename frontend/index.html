@@ -277,23 +277,17 @@
                         <label for="student-pin">Workspace Access PIN</label>
                         <div class="login-input-wrapper">
                             <i class="fa-solid fa-key"></i>
-                            <input type="password" id="student-pin" placeholder="••••••••" required value="12345678">
+                            <input type="password" id="student-pin" placeholder="••••••••" required value="cybershield_student_2026">
                         </div>
                     </div>
+
+                    <div id="login-error-container" style="color: var(--color-dangerous, #FF3333); font-weight: 600; font-size: 14px; text-align: center; margin-bottom: 15px;" class="hidden"></div>
 
                     <button type="submit" class="login-submit-btn" id="login-submit-btn">
                         <span class="btn-text">Launch Workspace <i class="fa-solid fa-circle-nodes"></i></span>
                         <span class="btn-loader-text hidden"><i class="fa-solid fa-spinner fa-spin"></i> Securing session...</span>
                     </button>
                 </form>
-
-                <div class="login-divider">
-                    <span>or</span>
-                </div>
-
-                <button class="login-guest-btn" id="login-guest-btn">
-                    Access as Guest Companion <i class="fa-solid fa-angles-right"></i>
-                </button>
 
                 <div class="login-card-footer">
                     <p><i class="fa-solid fa-shield-halved"></i> Secured locally by SQLite Database & Gemini ADK</p>

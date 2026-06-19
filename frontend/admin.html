@@ -476,8 +476,12 @@
             <h3 style="margin-top: 0; margin-bottom: 15px; font-family: 'Space Grotesk'; font-size: 22px;">Security Admin Portal</h3>
             <p>Authentication required. Enter your developer/grader passcode below to manage verification logs and threat records.</p>
             <div class="login-form-group">
+                <label for="admin-username-input">Admin Username</label>
+                <input type="text" id="admin-username-input" class="login-input" style="letter-spacing:normal; text-align:left; font-family:inherit;" placeholder="e.g. admin" value="admin">
+            </div>
+            <div class="login-form-group">
                 <label for="admin-passcode-input">Admin Private Key</label>
-                <input type="password" id="admin-passcode-input" class="login-input" placeholder="••••••••••••" autocomplete="current-password">
+                <input type="password" id="admin-passcode-input" class="login-input" placeholder="••••••••••••" autocomplete="current-password" value="cybershield_pvt_2026">
             </div>
             <button id="admin-login-submit" class="login-submit-btn">Authorize Session</button>
             <div id="login-error-msg" style="color: var(--color-dangerous); margin-top: 15px; font-weight: 600; font-size: 14px;" class="hidden"></div>
@@ -886,12 +890,13 @@
 
         // --- AUTH SECTION ---
         async function performLogin() {
+            const usernameVal = document.getElementById("admin-username-input").value;
             const passcodeVal = document.getElementById("admin-passcode-input").value;
             const errorDiv = document.getElementById("login-error-msg");
             errorDiv.classList.add("hidden");
 
-            if (!passcodeVal.trim()) {
-                errorDiv.textContent = "Please enter an admin passcode key.";
+            if (!usernameVal.trim() || !passcodeVal.trim()) {
+                errorDiv.textContent = "Please enter both admin username and passcode key.";
                 errorDiv.classList.remove("hidden");
                 return;
             }
@@ -900,7 +905,7 @@
                 const res = await fetch("/api/admin/verify", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ key: passcodeVal })
+                    body: JSON.stringify({ username: usernameVal, key: passcodeVal })
                 });
 
                 if (res.ok) {
