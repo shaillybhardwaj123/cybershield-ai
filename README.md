@@ -139,3 +139,13 @@ Demonstrates compliance with the quality flywheel of agent engineering.
 * **Synthesize Dataset:** `agents-cli eval dataset synthesize` to produce standard evaluation arrays.
 * **Run CLI Evaluations:** Run `agents-cli eval run` to measure classification latency and decision boundary accuracy.
 * **Visual Evaluation Panel:** Click **Run Agent Eval Suite** under the web dashboard's **Admin Mode** to check performance targets.
+
+---
+
+## ⚖️ License & Copyright
+
+**© 2026 Shailly Bhardwaj. All Rights Reserved.**
+
+This repository and all of its contents (source code, assets, UI layouts, diagrams) are private and proprietary. No portion of this project may be copied, cloned, reproduced, redistributed, or used in any manner without the explicit prior written permission of the author.
+
+*Additional deployment guides, corporate integrations, and project details will be added to this repository soon.*
