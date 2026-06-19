@@ -1,12 +1,12 @@
 # 🛡️ CyberShield AI: Student Scam & Fraud Protection Network
 
-[![Kaggle Capstone](https://img.shields.io/badge/Competition-Kaggle%20x%20Google%20AI%20Agents-blue?style=for-the-badge&logo=google)](https://www.kaggle.com)
+[![Course Knowledge](https://img.shields.io/badge/Course%20Project-Kaggle%20x%20Google%20AI%20Agents-blue?style=for-the-badge&logo=google)](https://www.kaggle.com)
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com)
 [![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org)
 [![Google Gemini](https://img.shields.io/badge/Gemini-8E75C2?style=for-the-badge&logo=googlegemini&logoColor=white)](https://deepmind.google/technologies/gemini/)
 [![SQLite](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org)
 
-An advanced, production-grade **Multi-Agent Security Pipeline** designed and built for the **Kaggle x Google AI Agents Intensive Capstone** (5-day intensive competition). CyberShield AI is engineered to shield students and freshers from sophisticated recruiting fraud, fake internships, scholarship scams, and credential phishing.
+An advanced, production-grade **Multi-Agent Security Pipeline** built after attending the **Kaggle x Google AI Agents Intensive** course to demonstrate the practical application of agentic engineering. CyberShield AI is built from the ground up using my own knowledge to shield students and freshers from recruiting fraud, fake internships, scholarship scams, and credential phishing.
 
 ---
 
