@@ -535,14 +535,20 @@ document.addEventListener("DOMContentLoaded", () => {
     // Render Friendly Verdict & Gauge Animation
     // ----------------------------------------------------
     function displayFriendlyVerdict(caseData) {
-        const score = caseData.risk_score;
-        const verdict = caseData.verdict;
+        let score = caseData.risk_score;
+        let verdict = caseData.verdict;
         const scamType = caseData.scam_type;
         const explanation = caseData.explanation;
         const evidence = caseData.evidence;
         const nextSteps = caseData.next_steps;
         const safeReply = caseData.safe_reply;
         const reportSummary = caseData.report_summary;
+
+        // Override to show as DANGEROUS/Not Safe in red color if scam type is fake internship or fake job offer
+        if (scamType === "fake internship" || scamType === "fake job offer") {
+            verdict = "DANGEROUS";
+            score = Math.max(score, 90);
+        }
 
         // 1. Gauge arc animation (circumference = 263.8)
         document.getElementById("verdict-score-value").textContent = score;
@@ -559,11 +565,11 @@ document.addEventListener("DOMContentLoaded", () => {
         let badgeLabel = "✅ Looks Safe";
         let friendlyTitle = "This content appears safe!";
         if (verdict === "DANGEROUS") {
-            badgeLabel = "⛔ Dangerous";
-            friendlyTitle = "Stay away. This looks dangerous";
+            badgeLabel = "⛔ Not Safe / Dangerous";
+            friendlyTitle = "Stay away. This content is NOT safe!";
         } else if (verdict === "HIGH RISK") {
-            badgeLabel = "🚨 Likely Scam";
-            friendlyTitle = "Be careful with this offer";
+            badgeLabel = "🚨 Not Safe / Likely Scam";
+            friendlyTitle = "Be careful. This content is NOT safe!";
         } else if (verdict === "SUSPICIOUS") {
             badgeLabel = "⚠ Be Careful";
             friendlyTitle = "Some indicators look unusual";
@@ -572,6 +578,12 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("verdict-badge-val").textContent = badgeLabel;
         document.getElementById("scam-type-badge-val").textContent = scamType;
         document.getElementById("verdict-title-val").textContent = friendlyTitle;
+
+        // Dynamically update the verdict card description
+        const verdictDescEl = document.getElementById("verdict-desc-val");
+        if (verdictDescEl) {
+            verdictDescEl.textContent = explanation;
+        }
 
         // 3. Explanation body
         document.getElementById("verdict-friendly-explanation").textContent = explanation;
@@ -679,18 +691,25 @@ document.addEventListener("DOMContentLoaded", () => {
             const dateStr = new Date(c.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             const snippet = c.input_text.substring(0, 50) + (c.input_text.length > 50 ? "..." : "");
             
-            const vLabel = c.verdict.toLowerCase().replace(" ", "_");
+            let displayVerdict = c.verdict;
+            let displayScore = c.risk_score;
+            if (c.scam_type === "fake internship" || c.scam_type === "fake job offer") {
+                displayVerdict = "DANGEROUS";
+                displayScore = Math.max(c.risk_score, 90);
+            }
+
+            const vLabel = displayVerdict.toLowerCase().replace(" ", "_");
             let badgeLabel = "✅ Looks Safe";
-            if (c.verdict === "DANGEROUS") badgeLabel = "⛔ Dangerous";
-            else if (c.verdict === "HIGH RISK") badgeLabel = "🚨 Likely Scam";
-            else if (c.verdict === "SUSPICIOUS") badgeLabel = "⚠ Be Careful";
+            if (displayVerdict === "DANGEROUS") badgeLabel = "⛔ Not Safe / Dangerous";
+            else if (displayVerdict === "HIGH RISK") badgeLabel = "🚨 Not Safe / Likely Scam";
+            else if (displayVerdict === "SUSPICIOUS") badgeLabel = "⚠ Be Careful";
 
             card.innerHTML = `
                 <span class="history-card-id"><strong>${c.id}</strong></span>
                 <span class="history-card-date">${dateStr}</span>
                 <span class="history-card-category">${c.scam_type}</span>
                 <span class="history-card-snippet" title="${c.input_text}">${snippet}</span>
-                <span class="history-card-score">Score: <strong>${c.risk_score}/100</strong></span>
+                <span class="history-card-score">Score: <strong>${displayScore}/100</strong></span>
                 <div><span class="verdict-lbl ${vLabel}">${badgeLabel}</span></div>
                 <div><a class="view-case-link" data-id="${c.id}">View Review</a></div>
             `;
@@ -753,8 +772,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const vClass = k.toLowerCase().replace(" ", "_");
                 
                 let friendlyName = "✅ Looks Safe";
-                if (k === "DANGEROUS") friendlyName = "⛔ Dangerous";
-                else if (k === "HIGH RISK") friendlyName = "🚨 Likely Scam";
+                if (k === "DANGEROUS") friendlyName = "⛔ Not Safe / Dangerous";
+                else if (k === "HIGH RISK") friendlyName = "🚨 Not Safe / Likely Scam";
                 else if (k === "SUSPICIOUS") friendlyName = "⚠ Be Careful";
 
                 const row = document.createElement("div");
@@ -803,8 +822,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     const vClass = t.verdict.toLowerCase().replace(" ", "_");
                     
                     let badgeLabel = "✅ Safe";
-                    if (t.verdict === "DANGEROUS") badgeLabel = "⛔ Dangerous";
-                    else if (t.verdict === "HIGH RISK") badgeLabel = "🚨 Likely Scam";
+                    if (t.verdict === "DANGEROUS") badgeLabel = "⛔ Not Safe / Dangerous";
+                    else if (t.verdict === "HIGH RISK") badgeLabel = "🚨 Not Safe / Likely Scam";
                     else if (t.verdict === "SUSPICIOUS") badgeLabel = "⚠ Be Careful";
 
                     let icon = "fa-globe";

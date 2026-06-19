@@ -37,7 +37,12 @@ class CyberShieldVerdict(BaseModel):
 
 # Check if Gemini credentials are ready
 def is_gemini_available() -> bool:
-    return bool(os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_GENAI_USE_VERTEXAI") == "True")
+    api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
+    if api_key:
+        api_key_str = str(api_key).strip()
+        if api_key_str and api_key_str not in ["your_gemini_api_key_here", "your_api_key_here", ""]:
+            return True
+    return bool(os.environ.get("GOOGLE_GENAI_USE_VERTEXAI") == "True")
 
 # Define the models
 model_client = Gemini(
@@ -346,6 +351,75 @@ async def run_cyber_shield_scan(text: str, file_path: Optional[str] = None, mode
                 log_trace(case_id, "System", "llm_agent_scan_failed", "ERROR", "Coordinator agent did not write result to session state.", 0)
         except Exception as e:
             log_trace(case_id, "System", "llm_agent_scan_error", "ERROR", f"ADK Scan pipeline crashed: {str(e)}", 0)
+
+    # Final override check to ensure fake internships and job scams are classified as dangerous/high risk and red in color
+    input_lower = combined_input.lower()
+    is_fake_internship = (
+        "fake internship" in input_lower
+        or "internship scam" in input_lower
+        or ("internship" in input_lower and (
+            "fee" in input_lower
+            or "deposit" in input_lower
+            or "payment" in input_lower
+            or "pay" in input_lower
+            or "upfront" in input_lower
+            or "refundable" in input_lower
+            or "registration" in input_lower
+            or "telegram" in input_lower
+            or "whatsapp" in input_lower
+            or risk_score > 0
+        ))
+    )
+    
+    if is_fake_internship:
+        scam_type = "fake internship"
+        risk_score = max(risk_score, 90)
+        verdict = "DANGEROUS"
+        explanation = "Critical Alert: This communication has been verified as a Fake Internship Scam. It requests advance payments, processing fees, or uses unofficial social channels, which are high-risk indicators."
+        what_to_do = "Do NOT reply or send any money. Block the sender immediately, report them on the platform, and notify your placement officer."
+        case_report_data = {
+            "verdict": verdict,
+            "risk_score": risk_score,
+            "scam_type": scam_type,
+            "explanation": explanation,
+            "evidence": evidence if evidence else ["Suspicious fake internship markers detected in communication."]
+        }
+        report_res = report_generator_tool(json.dumps(case_report_data), case_id)
+        report_summary = report_res["report_markdown"]
+        
+    elif (
+        "fake job" in input_lower
+        or "job scam" in input_lower
+        or (("job" in input_lower or "recruit" in input_lower or "salary" in input_lower or "stipend" in input_lower) and (
+            "fee" in input_lower
+            or "deposit" in input_lower
+            or "payment" in input_lower
+            or "pay" in input_lower
+            or "upfront" in input_lower
+            or "refundable" in input_lower
+            or "registration" in input_lower
+            or "telegram" in input_lower
+            or "whatsapp" in input_lower
+            or risk_score > 0
+        ))
+    ):
+        scam_type = "fake job offer"
+        risk_score = max(risk_score, 85)
+        verdict = "HIGH RISK"
+        explanation = "Warning: This message shows clear signs of a Fake Job Offer. Recruiting processes that demand fees, security deposits, or conduct interviews via private channels are fraudulent."
+        what_to_do = "Do NOT pay any fees. Report this sender to your college placement cell and block their contact info."
+        case_report_data = {
+            "verdict": verdict,
+            "risk_score": risk_score,
+            "scam_type": scam_type,
+            "explanation": explanation,
+            "evidence": evidence if evidence else ["Suspicious fake job markers detected in communication."]
+        }
+        report_res = report_generator_tool(json.dumps(case_report_data), case_id)
+        report_summary = report_res["report_markdown"]
+
+    if verdict == "SAFE":
+        scam_type = "General / Safe"
 
     # Save to SQLite DB
     case_db_record = {

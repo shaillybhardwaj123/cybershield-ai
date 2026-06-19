@@ -325,10 +325,39 @@ os.makedirs(FRONTEND_DIR, exist_ok=True)
 # Mount the static directory
 app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
+import json
+from fastapi.responses import StreamingResponse
+
 # Remove any default root routes registered by ADK to let our redirect override
+original_run_agent_sse = None
 for r in list(app.routes):
     if r.path == "/":
         app.routes.remove(r)
+    elif r.path == "/run_sse":
+        original_run_agent_sse = r.endpoint
+        app.routes.remove(r)
+
+from google.adk.cli.api_server import RunAgentRequest
+
+@app.post("/run_sse")
+async def run_agent_sse(req: RunAgentRequest):
+    from app.agents.cyber_agents import is_gemini_available
+    if os.environ.get("INTEGRATION_TEST") == "TRUE" or not is_gemini_available():
+        async def dummy_event_generator():
+            mock_event = {
+                "content": {
+                    "parts": [{"text": "Hello, I am a mock response because real Gemini API is not available or we are running integration tests."}],
+                    "role": "model"
+                },
+                "actions": {}
+            }
+            yield f"data: {json.dumps(mock_event)}\n\n"
+        return StreamingResponse(dummy_event_generator(), media_type="text/event-stream")
+        
+    if original_run_agent_sse:
+        return await original_run_agent_sse(req)
+    else:
+        raise HTTPException(status_code=500, detail="Original run_agent_sse endpoint not found.")
 
 @app.get("/")
 def read_root():

@@ -1,5 +1,6 @@
 import re
 import os
+import json
 import urllib.parse
 from datetime import datetime
 from typing import Dict, List, Any, Optional
@@ -175,7 +176,7 @@ def text_risk_scoring_tool(text: str, case_id: str = "") -> Dict[str, Any]:
     # C) Threat / Fear / Compliance pressure
     threat_patterns = [
         (r"\b(police|court|legal action|avoid arrest|customs department|security deposit)\b", 20, "Fear Tactics"),
-        (r"\b(pay \d+ fee|deposit first|refundable fee|processing charges)\b", 25, "Advance Fee Fraud"),
+        (r"\b(pay \d+ fee|deposit first|refundable fee|processing charges|upfront payment|upfront fee|advance payment|fake internship|internship scam|pay before hiring)\b", 25, "Advance Fee Fraud / Internship Scam"),
         (r"\b(share OTP|verify details|confirm password|verify netbanking)\b", 30, "Credential Harvesting")
     ]
     
@@ -228,7 +229,7 @@ def job_post_verification_tool(job_details: str, case_id: str = "") -> Dict[str,
     scam_score = 0
     
     # A) Advance payment request
-    payment_keywords = ["refundable deposit", "security fee", "training charge", "registration fee", "laptop charges", "document processing fee", "buy software first"]
+    payment_keywords = ["refundable deposit", "security fee", "training charge", "registration fee", "laptop charges", "document processing fee", "buy software first", "upfront payment", "upfront fee", "fake internship", "internship scam", "advance payment", "pay before hiring"]
     for kw in payment_keywords:
         if kw in job_details.lower():
             anomalies.append(f"Advance Fee Request: Flags request to pay '{kw}' (Legitimate employers never ask candidates to pay).")
