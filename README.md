@@ -4,112 +4,140 @@
 
 <h1 align="center">🛡️ CyberShield AI</h1>
 <p align="center">
-  <strong>Student Scam & Fraud Protection Network</strong>
+  <strong>AI-powered multi-agent cybersecurity platform that protects students from phishing, fake internships, scholarship fraud, and recruitment scams.</strong>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" alt="Python" />
-  <img src="https://img.shields.io/badge/fastapi-109989?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
-  <img src="https://img.shields.io/badge/google_gemini-8E75C2?style=for-the-badge&logo=googlegemini&logoColor=white" alt="Google Gemini" />
-  <img src="https://img.shields.io/badge/sqlite-07405E?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite" />
-  <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
-</p>
-<p align="center">
-  <img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />
-  <img src="https://img.shields.io/badge/css3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
-  <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />
-  <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white" alt="Git" />
-  <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
-</p>
-<p align="center">
-  <img src="https://img.shields.io/badge/google_cloud-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white" alt="Google Cloud" />
-  <img src="https://img.shields.io/badge/vs_code-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white" alt="VS Code" />
-  <img src="https://img.shields.io/badge/markdown-000000?style=for-the-badge&logo=markdown&logoColor=white" alt="Markdown" />
-</p>
-
-<p align="center">
-  An advanced, production-grade <strong>Multi-Agent Security Pipeline</strong> built independently using the cutting-edge concepts of LLM orchestration, vector tracking, and security systems. CyberShield AI acts as an autonomous digital assistant shielding students and freshers from recruitment fraud, fake internships, scholarship scams, and credential harvesting.
+  <a href="https://cybershield-ai-84fb.onrender.com/"><img src="https://img.shields.io/badge/Live-Demo-success?style=for-the-badge" alt="Live Demo" /></a>
+  <img src="https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge" alt="Python 3.11" />
+  <img src="https://img.shields.io/badge/Google-ADK-orange?style=for-the-badge" alt="Google ADK" />
 </p>
 
 ---
 
-## 🚀 Architectural Design & Key Features
-
-* **Autonomous Multi-Agent Orchestration:** Integrates the Google Agent Development Kit (ADK) to organize multiple specialised agents into a unified, stateful `SequentialAgent` workflow.
-* **Server-Side Security Enforcement:** Features robust server-side token handshakes to validate access to administrative dashboards, eliminating client-side inspector bypasses.
-* **Multimodal Vision Scanning:** Employs `gemini-2.5-flash` to run real-time Vision OCR on screenshots, chat transcripts, and flyers, extracting threat vectors dynamically.
-* **Observability & Trace Logs:** Every execution step, latency cost, and tool output is logged sequentially to a local database and rendered on a timeline.
+## 🔗 Live Deployment
+*   **Demo Portal:** [https://cybershield-ai-84fb.onrender.com/](https://cybershield-ai-84fb.onrender.com/)
+*   **GitHub Repository:** [https://github.com/shaillybhardwaj123/cybershield-ai](https://github.com/shaillybhardwaj123/cybershield-ai)
 
 ---
 
-## 🛠️ Detailed Tech Stack & Implementation
+## 🖼️ Screenshots & UI Showcase
 
-### 🔹 Backend Architecture & LLM Orchestration
-* **Google Agent Development Kit (ADK):** Orchestrates the agent pipeline (`pipeline_agent`), structuring agent memory states and routing intermediate analysis.
-* **FastAPI (Python):** Powers asynchronous endpoints for scanner operations, file uploads, secure admin logins, and serves static files.
-* **Google GenAI / Gemini SDK:** Drives multimodal vision analysis and formats final coordinator assessments under strict Pydantic schemas.
+### 1. Dashboard Home
+*Landing portal displaying scanning inputs and configuration cards.*
+![Dashboard Home](assets/dashboard.png)
 
-### 🔹 Storage, Memory & Telemetry
-* **SQLite Database:** Stores logs across four separate tables:
-  * `cases`: Active cases database containing scores, evidence arrays, next steps, and reports.
-  * `memory_bank`: Long-term threat intelligence database checking blacklisted phone numbers, email hosts, and domains.
-  * `observability_traces`: Latency profiles and agent execution status tracking.
-  * `tool_calls`: Log tracking raw inputs and returned parameters for debugging.
-* **OpenTelemetry:** Integrated setup for distributed tracing and performance metrics logging.
+### 2. Scam Detection Result
+*Verdict view showcasing risk gauge results and parsed indicator evidence.*
+![Scam Detection Result](assets/result.png)
 
-### 🔹 Frontend Client
-* **Vanilla HTML5, CSS3, & Modern JS:** Designed with Inter typography, sleek dark mode aesthetics, and hover spotlight effects mimicking digital government portals.
-* **Observability Visualizer:** Renders vertical trace logs dynamically from the database to present real-time latency timelines.
+### 3. Observability Timeline
+*Timeline visualizer displaying latencies and trace payloads.*
+![Observability Timeline](assets/workflow.png)
 
 ---
 
-## 📐 System Flowcharts & Diagrams
+## 💡 Project Overview
+CyberShield AI is an autonomous, production-grade **Multi-Agent Security Pipeline** built using the **Google Agent Development Kit (ADK)** and the Gemini model family. It acts as a personal security analyst for students, helping them verify recruitment offers, scholarship opportunities, and messaging threads before they become victims of cybercrime.
 
-### Core Orchestration Pipeline
-```mermaid
-graph TD
-    User([Student / Job Seeker]) -->|Interacts with UI| Frontend[Frontend SPA Dashboard]
-    Frontend -->|POST /api/scan| Backend[FastAPI Backend Server]
-    
-    subgraph Multi-Agent Pipeline [CyberShield Multi-Agent Network]
-        Backend -->|Initial Triage| Triage[Scam Triage Agent]
-        Triage -->|Routes Task| Message[Message Analysis Agent]
-        Triage -->|Routes Task| Job[Job Verification Agent]
-        Triage -->|Routes Task| URL[URL Safety Agent]
-        Triage -->|Routes Task| Intel[Threat Intel Agent]
-        
-        Message & Job & URL & Intel -->|Parallel Context| Advisor[Safety Advisor Agent]
-        Advisor -->|Draft Recommendations| Coordinator[Crisis Coordinator Agent]
-    end
+Every year, thousands of students lose money, credentials, and career opportunities to fake internships, scholarship scams, phishing campaigns, and impersonation attacks.
 
-    subgraph Custom Tools [Security Action Tools]
-        URL -->|Invokes| ToolURL[URLInspectionTool]
-        Message -->|Invokes| ToolText[TextRiskScoringTool]
-        Job -->|Invokes| ToolJob[JobPostVerificationTool]
-        Intel -->|Invokes| ToolIntel[ThreatIntelLookupTool]
-        Advisor -->|Invokes| ToolReply[SafeReplyTool]
-        Advisor -->|Invokes| ToolRep[ReportGeneratorTool]
-        Coordinator -->|Invokes| ToolHistory[CaseHistoryTool]
-    end
+---
 
-    subgraph Memory & Logging [SQLite Storage]
-        ToolHistory -->|Saves Case| DBCases[(cases table)]
-        ToolIntel -->|Queries/Updates| DBIntel[(memory_bank table)]
-        Backend -->|Logs Execution Traces| DBTraces[(observability_traces table)]
-        Backend -->|Logs Tool Payload| DBToolCalls[(tool_calls table)]
-    end
-    
-    Coordinator -->|Structured Verdict| Backend
-    Backend -->|JSON Report & Traces| Frontend
+## 1. Problem Statement
+The transition from college to the professional world is a high-vulnerability window for fresh graduates. Malicious actors leverage this to target academic placement systems and students directly via:
+*   **Fake Internships & Jobs:** Offering high wages or stipends but requiring upfront "refundable" registration fees, training packages, or equipment deposits.
+*   **Scholarship Fraud:** Promoting fake grants to harvest banking credentials or sensitive personal information.
+*   **Credential Phishing:** Tricking students into logging in via lookalike domains (e.g., `placement-portal-g00gle.com`).
+*   **Impersonation & Social Engineering:** Contacting students on messaging channels (Telegram, WhatsApp) pretending to be official university recruiters.
+
+---
+
+## 📐 Architecture
+CyberShield AI integrates an asynchronous FastAPI backend with a multi-agent orchestration pipeline.
+
+![System Architecture](assets/architecture.png)
+
+### Core Telemetry & DB Schema
+All operations, latencies, and tool variables are tracked in a local SQLite database containing:
+*   `cases`: Log of investigated incidents, evidence arrays, and safety recommendations.
+*   `memory_bank`: Locally cached threat indicators (domain, email, phone number) updated in real-time when dangerous verdicts are issued.
+*   `observability_traces`: Latency profiles and step-by-step agent statuses.
+
+---
+
+## 🤖 Agent Responsibility Matrix
+
+The system splits security logic among multiple specialized agents built on the **Google ADK** framework:
+
+| Agent | Responsibility | Key Security Actions |
+| :--- | :--- | :--- |
+| **Triage Agent** | Scam classification | Parses input text to identify potential scam categories and dynamically route to downstream agents. |
+| **URL Agent** | Link verification | Inspects domains for lookalike patterns (typosquatting) and suspicious TLDs. |
+| **Job Agent** | Recruitment analysis | Audits recruitment details, detecting advance fee requests or unofficial channels. |
+| **Message Agent** | Language risk analysis | Scores wording pressure tactics, urgency markers, and coercion vectors. |
+| **Intel Agent** | Threat intelligence | Queries local SQLite blacklists for flagged emails, phone numbers, and domains. |
+| **Coordinator Agent** | Final verdict | Aggregates all specialists' findings, calculates final risk scores, and compiles verdict. |
+| **Advisor Agent** | Recommendations | Generates copy-paste safe reply templates and authority incident report markdown. |
+
+---
+
+## 🔄 Multi-Agent Workflow
+
 ```
+       User Input
+           │
+           ▼
+     Triage Agent
+           │
+           ▼
+┌─────────────────────────────────────────────────────────┐
+│  Message Agent ── URL Agent ── Job Agent ── Intel Agent │  (Parallel Analysis)
+└─────────────────────────────────────────────────────────┘
+           │
+           ▼
+   Coordinator Agent (Verdict & Score Engine)
+           │
+           ▼
+     Advisor Agent   (Actionable Guidance)
+           │
+           ▼
+     Final Verdict
+```
+
+1.  **Ingestion:** The system parses inputs and extracts text from attachments using `attachment_ocr_tool`.
+2.  **Triage Routing:** The `triage_agent` analyzes the content, defines the scam category, and loads corresponding specialists.
+3.  **Parallel Specialist Evaluation:**
+    *   `message_agent`: Invokes `text_risk_scoring_tool` to check urgency markers and pressure vectors.
+    *   `job_agent`: Runs `job_post_verification_tool` to look for advance payment cues.
+    *   `url_agent`: Invokes `url_inspection_tool` to check typosquatting and base domain records.
+    *   `intel_agent`: Queries the local SQLite blacklist database using `threat_intel_lookup_tool`.
+4.  **Advisory Assembly:** The `advisor_agent` constructs action checklists and safe reply refusal scripts.
+5.  **Reconciliation:** The `coordinator_agent` merges inputs, evaluates evidence, computes the final risk score, and maps it to a strict Pydantic output schema (`CyberShieldVerdict`).
+
+---
+
+## ✨ Features
+*   **Autonomous Multi-Agent Orchestration:** Integrates the Google ADK to organize multiple specialized agents into a unified, stateful `SequentialAgent` workflow.
+*   **Server-Side Security Enforcement:** Features robust server-side token handshakes to validate access to administrative dashboards, eliminating client-side inspector bypasses.
+*   **Multimodal Vision Scanning:** Employs Gemini to run real-time Vision OCR on screenshots, chat transcripts, and flyers, extracting threat vectors dynamically.
+*   **Observability & Trace Logs:** Every execution step, latency cost, and tool output is logged sequentially to a local database and rendered on a timeline.
+
+---
+
+## 🛠️ Tech Stack & Implementation
+*   **Frameworks:** FastAPI (Python), Vanilla HTML5, CSS3, & Modern JS.
+*   **Agent SDK:** Google Agent Development Kit (ADK) (`Agent`, `SequentialAgent`, `ParallelAgent`).
+*   **LLM Model:** Gemini model family (Vertex AI / Google AI SDK).
+*   **Database:** SQLite (telemetry logs, threat memory bank, audit traces).
+*   **Containerization:** Docker & Docker-Compose.
 
 ---
 
 ## ⚡ Setup & Local Execution
 
-Configure and launch the application locally:
-
 ### 1. Install Dependencies
+Ensure you have `uv` or standard pip installed:
 ```bash
 uv sync
 # OR
@@ -131,14 +159,19 @@ Open `http://localhost:8000` in your browser.
 ---
 
 ## 🔬 Observability & Quality Evaluations
-* **CLI Synthesizer:** Execute `agents-cli eval dataset synthesize` to produce standard evaluation dataset files.
-* **CLI Evaluator:** Run `agents-cli eval run` to measure classification speed and boundary accuracy targets.
-* **Interactive Panel:** Click **Run Agent Eval Suite** inside the **Admin Mode** tab on the web UI to verify accuracy scores live.
+*   **CLI Synthesizer:** Execute `agents-cli eval dataset synthesize` to produce standard evaluation dataset files.
+*   **CLI Evaluator:** Run `agents-cli eval run` to measure classification speed and boundary accuracy targets.
+*   **Interactive Panel:** Click **Run Agent Eval Suite** inside the **Admin Mode** tab on the web UI to verify accuracy scores live.
 
 ---
 
-## ⚖️ License & Copyright
+## 🔮 Future Improvements
+1.  **Vector Embeddings for Semantic Scam Matching:** Represent incoming text structures as high-dimensional vectors and compare them against a vector database of historic scams to detect mutational templates.
+2.  **Federated Blacklist Sharing:** Establish anonymous P2P sharing of discovered threat indicators across multiple campus nodes.
+3.  **Agentic Interactive Sidecars:** Launch sandboxed agent sidecars that automatically interact with suspicious recruiters via email/chat, probing them for credentials to gather solid evidence without exposing the user.
+4.  **In-App / Extension Scanning Hooks:** Build browser plugins to scan messages on Gmail or WhatsApp Web directly with a single click.
 
-**© 2026 Shailly Bhardwaj. All Rights Reserved.**
+---
 
-This repository and all associated contents (source code, diagrams, telemetry logs, assets) are private and proprietary. No portion of this project may be copied, cloned, reproduced, redistributed, or used in any manner without the explicit prior written permission of the author.
+## ⚖️ License
+Licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
