@@ -177,6 +177,14 @@ The system splits security logic among multiple specialized agents built on the 
 
 ---
 
+## 🔐 Role-Based Access Control (RBAC) & Admin Security
+CyberShield AI separates student users from placement cell administrators via strict, token-validated access controls:
+*   **Student Workspace Access:** Authorized students submit suspected scams (text/attachments) via standard student credentials (`USER_USERNAME`/`USER_PASSWORD`).
+*   **Admin Dashboard Privileges:** Access to tracing timelines, system evaluations, and memory-bank overrides is restricted behind server-side token handshakes, requiring admin credentials (`ADMIN_USERNAME`/`ADMIN_PASSCODE`).
+*   **Secure Storage:** Tokens and default administrative passwords are set dynamically inside the secure environment configuration (`.env`).
+
+---
+
 ## ⚡ Setup & Local Execution
 
 ### 1. Install Dependencies
