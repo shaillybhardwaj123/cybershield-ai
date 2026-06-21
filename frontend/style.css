@@ -730,23 +730,31 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .rating-sub-label {
-    font-size: 8.5px;
+    font-size: 8px;
     color: var(--text-muted);
     text-transform: uppercase;
     position: absolute;
-    top: 18px;
+    top: 22px;
+    left: 0;
+    right: 0;
+    text-align: center;
     font-weight: 700;
+    line-height: 1;
 }
 
 .rating-badge-container {
     position: absolute;
-    top: 32px;
+    top: 38px;
+    left: 0;
+    right: 0;
+    text-align: center;
     font-family: var(--font-heading);
     font-weight: 800;
+    line-height: 1;
 }
 
 .rating-num {
-    font-size: 22px;
+    font-size: 20px;
     color: #ffffff;
 }
 

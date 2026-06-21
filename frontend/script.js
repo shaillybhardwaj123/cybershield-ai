@@ -551,9 +551,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // 1. Gauge arc animation (circumference = 263.8)
-        document.getElementById("verdict-score-value").textContent = score;
+        const safetyScore = 100 - score;
+        document.getElementById("verdict-score-value").textContent = safetyScore;
         const circle = document.getElementById("verdict-gauge");
-        const offset = 263.8 - (263.8 * score) / 100;
+        const offset = 263.8 - (263.8 * safetyScore) / 100;
         circle.style.strokeDashoffset = offset;
 
         // 2. Verdict Banner Cards Styling
