@@ -44,15 +44,15 @@
 
 ### 1. Dashboard Home
 *Landing portal displaying scanning inputs and configuration cards.*
-![Dashboard Home](assets/dashboard.png)
+![Dashboard Home](assets/dashboard_home.png)
 
 ### 2. Scam Detection Result
 *Verdict view showcasing risk gauge results and parsed indicator evidence.*
-![Scam Detection Result](assets/result.png)
+![Scam Detection Result](assets/scam_result.png)
 
 ### 3. Observability Timeline
 *Timeline visualizer displaying latencies and trace payloads.*
-![Observability Timeline](assets/workflow.png)
+![Observability Timeline](assets/observability_timeline.png)
 
 ---
 
