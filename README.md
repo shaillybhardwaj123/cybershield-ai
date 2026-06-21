@@ -74,7 +74,7 @@ The transition from college to the professional world is a high-vulnerability wi
 
 ## 📐 Architecture
 
-![System Architecture](assets/architecture.png)
+![System Architecture](assets/architecture_green.png)
 
 CyberShield AI integrates an asynchronous FastAPI backend with a multi-agent orchestration pipeline.
 
